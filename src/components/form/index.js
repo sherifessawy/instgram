@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { Content, Title, Input, Button, Footer, Image} from './formStyles'
+import { Content, Title, Input, Button, Footer, Image, Frame} from './formStyles'
 
 function Form({children, ...rest}) {
     return (
@@ -39,6 +39,10 @@ Form.Button = function FormButton({children, ...rest}){
 
 Form.Footer = function FormFooter({children, ...rest}){
     return <Footer {...rest}>{children}</Footer>
+}
+
+Form.Frame = function FormFrame({children, ...rest}){
+    return <Frame {...rest}>{children}</Frame>
 }
 
 export default Form

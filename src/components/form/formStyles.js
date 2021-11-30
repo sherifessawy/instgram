@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 export const Content = styled.form`
-    padding: 1em;
+    padding: 1.5em;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgb(150,150,150);
+    background: white;
     max-width: 380px;
 `
 
@@ -38,8 +38,20 @@ export const Button = styled.button`
     margin-top: 0.5rem;
     padding: 3px;
     border-radius: 4px;
+
+    &:hover{
+        background: #4fa4e0;
+    }
 `
 
 export const Footer = styled.p`
-    margin-top: 2em;
+    margin: 2em 0 1em 0;
+`
+export const Frame = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    max-width: 720px;
+    margin: 0 auto;
+    min-height: 100vh;
 `
