@@ -18,13 +18,8 @@ Form.Image = function FormImage({...rest}){
 }
 
 Form.Input = function FormInput({children, ...rest}){
-    const [input, setInput] = useState('')
     return (
-        <Input 
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            {...rest}
-        >{children}</Input>
+        <Input {...rest}>{children}</Input>
     )
 }
 

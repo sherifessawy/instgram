@@ -40,8 +40,10 @@ export const Button = styled.button`
     border-radius: 4px;
 
     &:hover{
-        background: #4fa4e0;
+        background: ${({disabled}) => disabled ? '#038cfc' : '#4fa4e0'};
     }
+
+    opacity: ${({disabled}) => disabled ? '0.5' : '1'};
 `
 
 export const Footer = styled.p`
