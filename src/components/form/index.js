@@ -24,12 +24,7 @@ Form.Input = function FormInput({children, ...rest}){
 }
 
 Form.Button = function FormButton({children, ...rest}){
-    const handleClick = (e) => {
-        e.preventDefault()
-        console.log('clicked')
-    }
-
-    return <Button {...rest} onClick={(e) => handleClick(e)}>{children}</Button>
+    return <Button {...rest} >{children}</Button>
 }
 
 Form.Footer = function FormFooter({children, ...rest}){
