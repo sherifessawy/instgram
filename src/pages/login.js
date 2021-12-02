@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import Form from '../components/form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as PAGES from '../constanst/routes'
 import { FirebaseContext } from '../context/firebase';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -12,25 +12,28 @@ export default function Login() {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState('')
 
     const isValid = password === '' || email === '';
     
     const {firebaseApp} = useContext(FirebaseContext)
-    function handleClick(e) {
+    const navigate = useNavigate()
+    async function handleLogin(e) {
         e.preventDefault()
 
         const auth = getAuth(firebaseApp);
-        signInWithEmailAndPassword(auth, email, password)
+        await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                // ...
+                navigate(PAGES.DASHBOARD)
             })
             .catch((error) => {
+                setEmail('')
+                setPassword('')
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorMessage)
-                console.log(errorCode)
+                setError(errorMessage)
             });
     }
 
@@ -52,7 +55,8 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     value = {password}
                 />
-                <Form.Button disabled={isValid} onClick={(e) => handleClick(e)}>Log In</Form.Button>
+                <Form.Button disabled={isValid} onClick={(e) => handleLogin(e)}>Log In</Form.Button>
+                {error && <p className="text-xs text-red-500 mg-to-50px mt-4">{error}</p>} 
                 <Form.Footer>Don't have an account? 
                     <Link to={PAGES.SIGN_UP}>
                         <strong> Sign up</strong>
