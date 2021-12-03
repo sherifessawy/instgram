@@ -5,6 +5,7 @@ import * as PAGES from '../constanst/routes'
 import { FirebaseContext } from '../context/firebase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, getFirestore} from 'firebase/firestore'
+import doesUsernameExist from '../utils/usernameCheck';
 
 export default function SignUp() {
     useEffect(() => {
@@ -27,7 +28,13 @@ export default function SignUp() {
 
         const db = getFirestore(firebaseApp)
         const auth = getAuth(firebaseApp);
-        
+
+        const isDuplicatedUsername = await doesUsernameExist(username)
+        if(isDuplicatedUsername){
+            handleDuplicatedUsername(e)
+            return null
+        }  
+
         await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
@@ -35,10 +42,10 @@ export default function SignUp() {
                 const user = userCredential.user;
                 updateProfile(user, {displayName: username})
                 .then(async () => {
-                    await setDoc(doc(db, "users", username.toLocaleLowerCase()), 
+                    await setDoc(doc(db, "users", username), 
                     {
                         userId: user.uid,
-                        username: username.toLocaleLowerCase(),
+                        username: username,
                         fullName: fullName,
                         emailAddress: email.toLocaleLowerCase(),
                         following: [],
@@ -59,6 +66,15 @@ export default function SignUp() {
             });
     }
 
+    function handleDuplicatedUsername(){
+        setEmail('')
+        setPassword('')
+        setUsername('')
+        setFullName('')
+        setError('username already in use')
+        console.log('buck')
+    }
+
     return (
         <div style={{background: '#fafafa'}}>
         <Form.Frame>
@@ -66,7 +82,7 @@ export default function SignUp() {
                 <Form.Image src='./images/logo.png'/>
                 <Form.Input 
                     placeholder = "Username" 
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => setUsername(e.target.value.toLocaleLowerCase())}
                     value = {username}
                 />
                 <Form.Input 
