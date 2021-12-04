@@ -31,7 +31,9 @@ export default function SignUp() {
 
         const isDuplicatedUsername = await doesUsernameExist(username)
         if(isDuplicatedUsername){
-            handleDuplicatedUsername(e)
+            setPassword('')
+            setUsername('')
+            setError('username already in use')
             return null
         }  
 
@@ -58,21 +60,10 @@ export default function SignUp() {
             .catch((error) => {
                 setEmail('')
                 setPassword('')
-                setUsername('')
-                setFullName('')
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 setError(errorMessage)
             });
-    }
-
-    function handleDuplicatedUsername(){
-        setEmail('')
-        setPassword('')
-        setUsername('')
-        setFullName('')
-        setError('username already in use')
-        console.log('buck')
     }
 
     return (
@@ -91,13 +82,13 @@ export default function SignUp() {
                     value = {fullName}
                 />
                 <Form.Input 
-                    placeholder = "email" 
+                    placeholder = "Email Address" 
                     type="email"
                     onChange={(e) => setEmail(e.target.value)}
                     value = {email}
                 />
                 <Form.Input 
-                    placeholder = "password" 
+                    placeholder = "Password" 
                     type="password" 
                     onChange={(e) => setPassword(e.target.value)}
                     value = {password}

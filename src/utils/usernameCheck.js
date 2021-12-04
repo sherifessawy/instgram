@@ -4,7 +4,7 @@ import { getFirestore, doc, getDoc} from 'firebase/firestore'
 export default async function doesUsernameExist(username){
     const db = getFirestore(firebaseApp)
     const docRef = doc(db, "users", username);
-    const docSnap = await getDoc(docRef).then(console.log('hi'))
+    const docSnap = await getDoc(docRef)
 
     // if (docSnap.exists()) {
     //     console.log("Document data:", docSnap.data());
