@@ -17,7 +17,7 @@ function App() {
                     <Route path={PAGES.SIGN_UP} element={<SignUp/>} />
                     <Route path={PAGES.PROFILE} element={<Profile/>} />
                     <Route path={PAGES.NOT_FOUND} element={<NotFound/>} />
-                    <Route path={PAGES.DASHBOARD} element={<Dashboard/>} />
+                    <Route path={PAGES.DASHBOARD} element={<Dashboard/>} exact/>
                 </Routes>
             </Suspense>
         </Router>
