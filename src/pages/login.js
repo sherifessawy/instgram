@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react';
 import Form from '../components/form';
 import { Link, useNavigate } from 'react-router-dom';
-import * as PAGES from '../constanst/routes'
+import * as PAGES from '../constants/routes'
 import { FirebaseContext } from '../context/firebase';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
