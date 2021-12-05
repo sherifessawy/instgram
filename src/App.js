@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import * as PAGES from './constanst/routes'
+import * as PAGES from './constants/routes'
+import useAuthListener from './hooks/useAuthListener'
+import { UserContext } from './context/user'
 
 const Dashboard = lazy(() => import ('./pages/dashboard'));
 const Login = lazy(() => import ('./pages/login'));
@@ -9,18 +11,22 @@ const Profile = lazy(() => import ('./pages/profile'));
 const NotFound = lazy(() => import ('./pages/not-found'));
 
 function App() {
+    const { user } = useAuthListener();
+
     return (
-        <Router>
-            <Suspense fallback={<p>Loading...</p>}>
-                <Routes>
-                    <Route path={PAGES.LOGIN} element={<Login/>} />
-                    <Route path={PAGES.SIGN_UP} element={<SignUp/>} />
-                    <Route path={PAGES.PROFILE} element={<Profile/>} />
-                    <Route path={PAGES.NOT_FOUND} element={<NotFound/>} />
-                    <Route path={PAGES.DASHBOARD} element={<Dashboard/>} exact/>
-                </Routes>
-            </Suspense>
-        </Router>
+        <UserContext.Provider value={{ user }}>
+            <Router>
+                <Suspense fallback={<p>Loading...</p>}>
+                    <Routes>
+                        <Route path={PAGES.LOGIN} element={<Login/>} />
+                        <Route path={PAGES.SIGN_UP} element={<SignUp/>} />
+                        <Route path={PAGES.PROFILE} element={<Profile/>} />
+                        <Route path={PAGES.NOT_FOUND} element={<NotFound/>} />
+                        <Route path={PAGES.DASHBOARD} element={<Dashboard/>} exact/>
+                    </Routes>
+                </Suspense>
+            </Router>
+        </UserContext.Provider>
     )
 }
 
