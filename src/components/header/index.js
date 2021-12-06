@@ -1,12 +1,13 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext} from 'react';
 import { Logo, Content, Button } from './headerStyles'
 import * as PAGES from '../../constants/routes'
 import {FirebaseContext} from '../../context/firebase'
 import {getAuth, signOut} from 'firebase/auth'
 import {Link} from 'react-router-dom'
+import { UserContext } from '../../context/user';
 
 export default function Header({children, ...rest}) {
-    const [user, setUser] = useState({displayName: 'dali'})
+    const {user} = useContext(UserContext)
     const {firebaseApp} = useContext(FirebaseContext)
     const auth = getAuth(firebaseApp)
 
@@ -33,7 +34,7 @@ export default function Header({children, ...rest}) {
                             />
                         </svg>
                     </Link>
-                    <button onClick={() => signOut(auth).then(() => setUser(null))} >
+                    <button onClick={() => signOut(auth)} >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
