@@ -1,18 +1,22 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Content, Comment, Caption, Input, Button } from '../post/postStyles'
 import {Link} from 'react-router-dom'
 
-function Post() {
-    const user = {displayName: 'dali'}
-    //get photo comments from firebase from getPostData function
-    const comments = ['s', 'sd', 'sdd', 'qw'] 
-    const postComments = comments.slice(-3).map( comment => (
-        <Comment className="ml-4" >
-            comments
+function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated}}) {
+    const [newComment, setNewComment] = useState('')
+
+    const date = new Date(dateCreated).toString()
+    const user = {displayName: 'raphael'}
+    //const comments = ['s', 'sd', 'sdd', 'qw'] 
+    
+    const postComments = comments.slice(-3).map( (comment, index) => (
+        <Comment key={index} className="ml-4" >
+            <strong>{comment.displayName}</strong> {comment.comment}
         </Comment>
     ))
-
+    
     function handleClick(){
+        // add newComment to post comments in firebase
         return 1
     }
 
@@ -26,15 +30,20 @@ function Post() {
                 />
                 <p className='font-bold'>{user.displayName}</p>
             </Link>
-            <img src={"/images/users/raphael/1.jpg"} alt="post image" />
+            <img src={imageSrc} alt="post image" />
             <div className='flex justify-between w-14 m-4'>
                 <Post.LikeIcon /> <Post.CommentIcon />
             </div>
-            <Caption><strong>{user.displayName}</strong> caption</Caption>
+            <p className="pl-4 pb-4 text-xs font-bold" >{likes.length} Likes</p>
+            <Caption><strong>{user.displayName}</strong> {caption}</Caption>
             {comments.length > 3 && <p className="pl-4" onClick={() => handleClick()}>view all {comments.length} comments</p>}
             {postComments}
-            <p className="p-4" >2 MONTHS AGO</p>
-            <Input placeholder='Add a comment ...'/>
+            <p className="p-4 text-xs" >{date}</p>
+            <Input 
+                placeholder='Add a comment ...'
+                value = {newComment}
+                onChange={({target}) => setNewComment(target.value)}
+            />
             <Button>Post</Button>
         </Content>
     )
