@@ -57,7 +57,7 @@ export function seedDatabase(firebase) {
   
     for (let i = 1; i <= 5; ++i) {
         const userPhoto = async () => {
-            await setDoc(doc(db, "photos", `user${i} photo`), 
+            await setDoc(doc(db, "photos", `photo${i}`), 
                 {
                 photoId: i,
                 userId: '2',

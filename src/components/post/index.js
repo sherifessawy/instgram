@@ -1,13 +1,17 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { Content, Comment, Caption, Input, Button } from '../post/postStyles'
 import {Link} from 'react-router-dom'
+import { doc, updateDoc, arrayUnion, getFirestore } from "firebase/firestore"
+import { firebaseApp } from '../../lib/firebase'
+import {UserContext} from '../../context/user'
 
-function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated}}) {
+function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photoId}, updateTimeline}) {
+    const [commentInput, setCommentInput] = useState('')
     const [newComment, setNewComment] = useState('')
+    const {user} = useContext(UserContext)
 
     const date = new Date(dateCreated).toString()
-    const user = {displayName: 'raphael'}
-    //const comments = ['s', 'sd', 'sdd', 'qw'] 
+    const postUser = {displayName: 'raphael'} //replace with poster from firebase
     
     const postComments = comments.slice(-3).map( (comment, index) => (
         <Comment key={index} className="ml-4" >
@@ -15,36 +19,49 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated}}) {
         </Comment>
     ))
     
+    useEffect(async () => {
+        //adding new comment to post in firestore
+        if (newComment){ // to prevent useEffect from making a firebase call on component mount
+            const db  = getFirestore(firebaseApp)
+            const docRef = doc(db, "photos", `photo${photoId}`);
+            await updateDoc(docRef, {
+                comments: arrayUnion({displayName: user.displayName, comment:newComment})
+            })
+            setCommentInput('')
+            setNewComment('')
+            updateTimeline((prev) => !prev) //used to update timeline (parent component) when new comment is posted to show changes on screen real time
+        }
+    }, [newComment])
+    
     function handleClick(){
-        // add newComment to post comments in firebase
         return 1
     }
 
     return (
         <Content>
-            <Link to={`/p/${user.displayName}`} className='flex items-center'>
+            <Link to={`/p/${postUser.displayName}`} className='flex items-center'>
                 <img
                     className="rounded-full h-8 w-8 flex m-4"
-                    src={`/images/avatars/${user.displayName}.jpg`}
-                    alt={`${user.displayName} profile picture`}
+                    src={`/images/avatars/${postUser.displayName}.jpg`}
+                    alt={`${postUser.displayName} profile picture`}
                 />
-                <p className='font-bold'>{user.displayName}</p>
+                <p className='font-bold'>{postUser.displayName}</p>
             </Link>
             <img src={imageSrc} alt="post image" />
             <div className='flex justify-between w-14 m-4'>
                 <Post.LikeIcon /> <Post.CommentIcon />
             </div>
             <p className="pl-4 pb-4 text-xs font-bold" >{likes.length} Likes</p>
-            <Caption><strong>{user.displayName}</strong> {caption}</Caption>
+            <Caption><strong>{postUser.displayName}</strong> {caption}</Caption>
             {comments.length > 3 && <p className="pl-4" onClick={() => handleClick()}>view all {comments.length} comments</p>}
             {postComments}
             <p className="p-4 text-xs" >{date}</p>
             <Input 
                 placeholder='Add a comment ...'
-                value = {newComment}
-                onChange={({target}) => setNewComment(target.value)}
+                value = {commentInput}
+                onChange={({target}) => setCommentInput(target.value)}
             />
-            <Button>Post</Button>
+            <Button onClick={() => setNewComment(commentInput)}>Post</Button>
         </Content>
     )
 }

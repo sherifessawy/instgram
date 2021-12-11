@@ -14,10 +14,5 @@ export async function getUserDataById(userId) {
         userData = doc.data() // in this case the query is know to return only one value
     });
 
-    // const user = result.docs.map((item) => ({
-    //     ...item.data(),
-    //     docId: item.id
-    // }));
-
     return userData;
 }
