@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext, useRef} from 'react'
 import { Content, Comment, Caption, Input, Button, LikeIcon } from '../post/postStyles'
 import {Link} from 'react-router-dom'
 import { doc, updateDoc, arrayUnion, getFirestore, arrayRemove } from "firebase/firestore"
@@ -9,6 +9,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
     const [commentInput, setCommentInput] = useState('')
     const [newComment, setNewComment] = useState('')
     const {user} = useContext(UserContext)
+    const inputEl = useRef(null)
 
     const date = new Date(dateCreated).toString()
     const postUser = {displayName: 'raphael'} //replace with poster from firebase
@@ -58,7 +59,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
             <img src={imageSrc} alt="post image" />
             <div className='flex justify-between w-14 m-4'>
                 <Post.LikeIcon user={user} photoId={photoId} likes={likes} updateTimeline={updateTimeline}/> 
-                <Post.CommentIcon />
+                <Post.CommentIcon inputEl={inputEl} />
             </div>
             <p className="pl-4 pb-4 text-xs font-bold" >{likes.length} Likes</p>
             <Caption><strong>{postUser.displayName}</strong> {caption}</Caption>
@@ -75,6 +76,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
                 placeholder='Add a comment ...'
                 value = {commentInput}
                 onChange={({target}) => setCommentInput(target.value)}
+                ref={inputEl}
             />
             <Button onClick={() => setNewComment(commentInput)}>Post</Button>
         </Content>
@@ -115,11 +117,13 @@ Post.LikeIcon = function PostLikeIcon({user, photoId, likes, updateTimeline}){
     )
 }
 
-Post.CommentIcon = function PostCommentIcon(){
+Post.CommentIcon = function PostCommentIcon({inputEl}){
     return(
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
+        <div onClick={() => inputEl.current.focus()} className="cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+        </div>
     )
 }
 
