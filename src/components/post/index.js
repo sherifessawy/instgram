@@ -13,11 +13,15 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
     const date = new Date(dateCreated).toString()
     const postUser = {displayName: 'raphael'} //replace with poster from firebase
     
-    const postComments = comments.slice(-3).map( (comment, index) => (
-        <Comment key={index} className="ml-4" >
-            <strong>{comment.displayName}</strong> {comment.comment}
-        </Comment>
-    ))
+    const initializePostComments = (sliceValue = -3) => (
+        comments.slice(sliceValue).map( (comment, index) => (
+            <Comment key={index} className="ml-4" >
+                <strong>{comment.displayName}</strong> {comment.comment}
+            </Comment>
+        ))
+    )
+    const [postComments, setPostComments] = useState(initializePostComments)
+    
     
     useEffect(async () => {
         //adding new comment to post in firestore
@@ -33,8 +37,12 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
         }
     }, [newComment])
     
-    function handleClick(){
-        return 1
+    function displayComments(){
+        if (postComments.length <= 3){
+            setPostComments(() => initializePostComments(0)) //returns the complete comments array to be viewed on the post
+        } else if (postComments.length > 3){
+            setPostComments(() => initializePostComments(-3)) 
+        }
     }
 
     return (
@@ -54,7 +62,13 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
             </div>
             <p className="pl-4 pb-4 text-xs font-bold" >{likes.length} Likes</p>
             <Caption><strong>{postUser.displayName}</strong> {caption}</Caption>
-            {comments.length > 3 && <p className="pl-4" onClick={() => handleClick()}>view all {comments.length} comments</p>}
+            {
+                comments.length > 3 && (
+                    <p className="pl-6 cursor-pointer" onClick={() => displayComments()}>
+                        {postComments.length <= 3 ? `View all ${comments.length} comments` : 'Hide comments'}
+                    </p>
+                )
+            }
             {postComments}
             <p className="p-4 text-xs" >{date}</p>
             <Input 
@@ -69,7 +83,6 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
 
 Post.LikeIcon = function PostLikeIcon({user, photoId, likes, updateTimeline}){
     const [isLiked, setIsLiked] = useState(likes.includes(user.uid)) //is true if userId is existed in the photo likes array
-
 
     const hoverLike = async () =>{
         const db  = getFirestore(firebaseApp)
