@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
-import { Content, Comment, Caption, Input, Button } from '../post/postStyles'
+import { Content, Comment, Caption, Input, Button, LikeIcon } from '../post/postStyles'
 import {Link} from 'react-router-dom'
-import { doc, updateDoc, arrayUnion, getFirestore } from "firebase/firestore"
+import { doc, updateDoc, arrayUnion, getFirestore, arrayRemove } from "firebase/firestore"
 import { firebaseApp } from '../../lib/firebase'
 import {UserContext} from '../../context/user'
 
@@ -49,7 +49,8 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
             </Link>
             <img src={imageSrc} alt="post image" />
             <div className='flex justify-between w-14 m-4'>
-                <Post.LikeIcon /> <Post.CommentIcon />
+                <Post.LikeIcon user={user} photoId={photoId} likes={likes} updateTimeline={updateTimeline}/> 
+                <Post.CommentIcon />
             </div>
             <p className="pl-4 pb-4 text-xs font-bold" >{likes.length} Likes</p>
             <Caption><strong>{postUser.displayName}</strong> {caption}</Caption>
@@ -66,17 +67,38 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
     )
 }
 
-Post.LikeIcon = function PostLikeIcon({liked = false}){
-    return(
-        liked ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-            </svg>
+Post.LikeIcon = function PostLikeIcon({user, photoId, likes, updateTimeline}){
+    const [isLiked, setIsLiked] = useState(likes.includes(user.uid)) //is true if userId is existed in the photo likes array
+
+
+    const hoverLike = async () =>{
+        const db  = getFirestore(firebaseApp)
+        const docRef = doc(db, "photos", `photo${photoId}`)
+        setIsLiked((prev) => !prev) //it's not preferable to setState here before doing the query to database as the behavoir might not be expected as we change isLiked and then we use it (it's prev value) in the following lines (updating the doc). however, this setState async operation did not came into effect when the following lines were excuted (based on multible trials) so i used it here for the following reason: A better user experience, as setting the state of isLiked after doing the firestore query led to a relativly larger lag which made the like icon changes shape with a relativly larger delay
+        isLiked ? (
+            await updateDoc(docRef, {
+                likes: arrayRemove(user.uid)
+            })
         ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
+            await updateDoc(docRef, {
+                likes: arrayUnion(user.uid)
+            })
         )
+        updateTimeline(prev => !prev) //used to update timeline (parent component) when post is liked, or unliked, to show changes on screen real time
+    }
+
+    return(
+        <LikeIcon onClick={() => hoverLike()}>
+            {isLiked ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 18 18" fill="currentColor">
+                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                </svg>
+            ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            )}
+        </LikeIcon>
     )
 }
 

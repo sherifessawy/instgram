@@ -34,3 +34,10 @@ export const Button = styled.button`
         color: #236899;
     }
 `
+
+export const LikeIcon = styled.div`
+    
+    &:hover{
+        cursor: pointer;
+    }
+`
