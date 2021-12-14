@@ -9,7 +9,6 @@ export const Content = styled.div`
 
 export const Caption = styled.p`
     margin-left: 1rem;
-    margin-bottom: 1rem;
 `
 
 export const Comment = styled.p`
@@ -33,6 +32,8 @@ export const Button = styled.button`
     &:hover{
         color: #236899;
     }
+
+    ${({disabled}) => disabled && 'color:grey; opacity: 0.75; cursor:unset; &:hover{color: grey}'}
 `
 
 export const LikeIcon = styled.div`
