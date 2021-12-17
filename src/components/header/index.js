@@ -12,7 +12,7 @@ export default function Header({children, ...rest}) {
     const auth = getAuth(firebaseApp)
 
     return (
-        <Content {...rest}>
+        <Content {...rest} className="max-w-screen-lg mx-auto">
             <Logo to={PAGES.DASHBOARD}>
                 <img src={'/images/logo.png'} />
             </Logo>

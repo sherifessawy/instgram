@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import Post from '../post';
 import usePostData from '../../hooks/usePostData';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function Timeline({children, ...rest}) {
     const [timeline, updateTimeline] = useState(false) //used to update timeline when new comment is posted to show changes on screen real time
@@ -16,7 +18,7 @@ export default function Timeline({children, ...rest}) {
 
     return (
         <div className="flex flex-col w-8/12">
-            {timelinePosts}
+            {timelinePosts || <Skeleton count={4} width={600} height={600} />}
         </div>
     );
 }

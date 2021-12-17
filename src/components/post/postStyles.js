@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Content = styled.div`
-    margin: 1em 0;
+    margin: 0 0 2em;
     border: 1px solid #d3e6d8;
     border-bottom: none;
     background: white;
