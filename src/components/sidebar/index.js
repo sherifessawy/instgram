@@ -1,7 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import useUserData from '../../hooks/useUserData'
 import { Content, Suggestions, Profile, FollowButton } from './sidebarStyles';
 import {getUserDataById} from '../../utils/getUserData'
+import {FirebaseContext} from '../../context/firebase'
+import {getFirestore, doc, updateDoc, arrayUnion} from 'firebase/firestore'
 
 export default function Sidebar({children, ...rest}) {
     const {user} = useUserData()
@@ -11,7 +13,6 @@ export default function Sidebar({children, ...rest}) {
         //in the following function we passing, as arguments, array of users to exclude from the firestore query (which are the active user and the users the active user follow)
         if(user && user.following){
             const res = await getUserDataById([...user.following, user.userId], false) //returns array of profiles not followed by the current active user)
-            console.log(res)
             const renderSuggestions = res.map(suggestion => (
                 <Sidebar.Profile 
                         key={suggestion.userId}
@@ -19,13 +20,14 @@ export default function Sidebar({children, ...rest}) {
                         alt={`${suggestion.fullName} photo`}
                         user={suggestion}
                         scaleDown
-                        followBtn
+                        setSuggestedUsers = {setSuggestedUsers}
+                        activeUser={user}
                 />
             ))
             setSuggestedUsers(renderSuggestions)
         }
     }, [user])
-    
+
     return (
         <Content {...rest}>
             <Sidebar.Profile 
@@ -41,10 +43,18 @@ export default function Sidebar({children, ...rest}) {
     );
 }
 
-Sidebar.Profile = function SidebarProfile({children, src, alt, user, followBtn, ...rest}){
+Sidebar.Profile = function SidebarProfile({children, src, alt, user, setSuggestedUsers, activeUser, ...rest}){
+    const {firebaseApp} = useContext(FirebaseContext)
     
-    function handleClick(){
-        console.log('cliked')
+    async function followUser(){
+        setSuggestedUsers( prev => (
+            prev.filter(item => item.props.user.userId != user.userId)
+        ))
+        const db  = getFirestore(firebaseApp)
+        const docRef = doc(db, "users", activeUser.username)
+        await updateDoc(docRef, {
+            following: arrayUnion(user.userId)
+        })
     }
 
     return(
@@ -54,8 +64,8 @@ Sidebar.Profile = function SidebarProfile({children, src, alt, user, followBtn, 
                 <p>{user.username}</p>
                 <p>{user.fullName}</p>
             </div>
-            {followBtn && (
-                <FollowButton onClick={()=>handleClick()}>
+            {setSuggestedUsers && (
+                <FollowButton onClick={()=>followUser()}>
                     Follow
                 </FollowButton>
             )}
