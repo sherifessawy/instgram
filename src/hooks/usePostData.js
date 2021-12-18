@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import postsData from '../utils/getFollowedSUsersPosts';
+import {FollowedUsersPosts} from '../utils/get-post-data';
 import useUserData from './useUserData';
 
 
@@ -10,7 +10,7 @@ function usePostData(recievedUpdateFromTimeline) {
     useEffect(() => {
         if (user && user.following){
             async function getPostObjData () {
-                const res = await postsData(user.following[0]) //for now the user only follows one person this part to be modified later to return multipile followed users posts
+                const res = await FollowedUsersPosts(user.following[0]) //for now the user only follows one person this part to be modified later to return multipile followed users posts
                 setPosts(res)
             }
             getPostObjData()
