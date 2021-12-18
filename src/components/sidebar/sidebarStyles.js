@@ -1,7 +1,11 @@
 import styled from "styled-components";
 
 export const Content = styled.div`
-    width: 30%
+    width: 30%;
+
+    @media(max-width: 720px){
+        display: none;
+    }
 `
 
 export const Suggestions = styled.div`
