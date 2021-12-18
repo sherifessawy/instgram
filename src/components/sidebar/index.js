@@ -6,6 +6,7 @@ import {FirebaseContext} from '../../context/firebase'
 import {getFirestore, doc, updateDoc, arrayUnion} from 'firebase/firestore'
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from 'react-router-dom';
 
 export default function Sidebar({children, ...rest}) {
     const {user} = useUserData()
@@ -66,11 +67,14 @@ Sidebar.Profile = function SidebarProfile({children, src, alt, user, setSuggeste
 
     return(
         <Profile {...rest}>
-            <img src={src} alt={`${user.fullName} photo`}/>
+            <Link to={`/p/${user.username}`} >
+                <img src={src} alt={`${user.fullName} photo`}/>
+            </Link>
             <div>
                 <p>{user.username}</p>
                 <p>{user.fullName}</p>
             </div>
+            
             {setSuggestedUsers && (
                 <FollowButton onClick={()=>followUser()}>
                     Follow
