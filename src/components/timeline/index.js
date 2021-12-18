@@ -17,7 +17,7 @@ export default function Timeline({children, ...rest}) {
     }
 
     return (
-        <div className="flex flex-col w-8/12">
+        <div className="flex flex-col w-8/12 phone:w-full">
             {timelinePosts || <Skeleton count={4} width={600} height={600} />}
         </div>
     );
