@@ -4,12 +4,16 @@ export const Content = styled.div`
     max-width: 1024px;
     margin: 0 auto;
     padding: 3em 0;
+    min-height: 90vh;
     
 `
 
 export const Header = styled.div`
     display: flex;
     align-items: center;
+    margin-bottom: 3em;
+    padding-bottom: 4em;
+    border-bottom: 1px solid grey;
 
     img{
         border-radius: 50%;
@@ -32,4 +36,14 @@ export const Header = styled.div`
 `
 
 export const Posts = styled.div`
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(250px, 1fr) );
+    grid-gap: 30px;
+
+    h2{
+        text-align: center;
+        font-size: 3rem;
+        margin-top: 3rem;
+        color: grey;
+    }
 `
