@@ -10,7 +10,7 @@ export default function useUserData() {
         async function getUserObjByUserId() {
             // in here we need to query for the user data in the firestore
             const response = await getUserDataById(user.uid)
-            setActiveUser( response ) // pass the user response to the state of activeUser
+            setActiveUser( response[0] ) // pass the user response (type of data is obj) to the state of activeUser, after destructuring it out of the array
         }
         if (user && user.uid) {
             getUserObjByUserId();

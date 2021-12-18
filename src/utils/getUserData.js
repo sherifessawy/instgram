@@ -19,6 +19,5 @@ export async function getUserDataById(userId, isIncluded=true) {
         userData.push(doc.data()) 
     });
 
-
-    return userData.length === 1 ? userData[0]: userData; 
+    return userData; 
 }
