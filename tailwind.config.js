@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     screens: {
       'phone': {'max':'720px'},
+      'lg': '1024px',
     },
     extend: {},
   },
