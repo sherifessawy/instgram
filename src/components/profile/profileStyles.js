@@ -39,11 +39,51 @@ export const Posts = styled.div`
     display: grid;
     grid-template-columns: repeat( auto-fit, minmax(250px, 1fr) );
     grid-gap: 30px;
+    position: relative;
+    
+    img{
+        cursor: pointer;
+
+        &:hover{
+            
+        }
+    }
 
     h2{
         text-align: center;
         font-size: 3rem;
         margin-top: 3rem;
         color: grey;
+    }
+`
+
+export const Icons = styled.div`
+    position: absolute;
+    top: 45%;
+    right: 25%;
+    
+    div{
+        transform: scale(1.5, 1.5);
+        padding-right: 30px;
+        P{
+            margin-left: 5px;
+        }
+    }
+
+    p{
+        color: white;
+    }
+`
+export const PostFrame = styled.div`
+    position: relative;
+
+    ${Icons}{
+        display: none;
+    }
+
+    &:hover{
+        ${Icons}{
+            display: flex;
+        }
     }
 `
