@@ -4,8 +4,7 @@ import { Content, Suggestions, Profile, FollowButton } from './sidebarStyles';
 import {getUserDataById} from '../../utils/getUserData'
 import {FirebaseContext} from '../../context/firebase'
 import {getFirestore, doc, updateDoc, arrayUnion} from 'firebase/firestore'
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css'
+import SidebarLoader from './sidebar-loader'
 import { Link } from 'react-router-dom';
 
 export default function Sidebar({children, ...rest}) {
@@ -30,16 +29,16 @@ export default function Sidebar({children, ...rest}) {
             setSuggestedUsers(renderSuggestions)
         }
     }, [user])
-
+    
     return (
         <Content {...rest}>
-            {user.username ? (
+            {user && user.username ? (
             <Sidebar.Profile 
                 src={`/images/avatars/${user.username}.jpg`} 
                 alt={`${user.fullName} photo`}
                 user={user}
             /> ) : (
-            <Skeleton circle={true} width={75} height={75} className='mt-4'/> 
+            <SidebarLoader className='mt-4' />
             )}
             {suggestedUsers.length > 0 && 
             <Suggestions>

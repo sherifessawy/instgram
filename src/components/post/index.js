@@ -51,7 +51,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
         <Content>
             <Link to={`/p/${postUser.displayName}`} className='flex items-center'>
                 <img
-                    className="rounded-full h-8 w-8 flex m-4"
+                    className="rounded-full h-12 w-12 flex m-3 ml-6"
                     src={`/images/avatars/${postUser.displayName}.jpg`}
                     alt={`${postUser.displayName} profile picture`}
                 />
