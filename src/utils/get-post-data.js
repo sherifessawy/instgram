@@ -5,8 +5,8 @@ import { firebaseApp } from '../lib/firebase'
 
 export async function FollowedUsersPosts(followedUserId = null){
     //queries the database and returns posts for followed users only
-    //we initialize followedUserId value to null to not return anything in case Activeuser do not follow any users/pages
-    if (followedUserId === null) { return false } //return false if the activeuser do not follow anyone
+    //we initialize followedUserId value to null to not do a database query in case Activeuser do not follow any users/pages
+    if (followedUserId === null) { return "no posts" } //return "no posts" if the activeuser do not follow anyone
 
     const db = getFirestore(firebaseApp)
     let postData = []

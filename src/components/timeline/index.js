@@ -10,19 +10,23 @@ export default function Timeline() {
     const {posts} = usePostData(timeline) // passing the timeline changing state to make the hook do a query to firestore and get updated Post data
     
     let timelinePosts = null
-    if (posts) {
+    if (posts && posts !== "no posts") {
         timelinePosts = posts.map(postInfo => (
             <Post key={postInfo.photoId} postInfo={postInfo} updateTimeline={updateTimeline}/>)
         )
     }
 
     return posts ? (
-            <div className="flex flex-col w-8/12 phone:w-full">
-                {timelinePosts || <Instagram className='-mt-4' backgroundColor={'#d9d9d9'} foregroundColor={'#999'} />}
-            </div>
+            posts === "no posts" ? (
+                <p className='text-center w-8/12 phone:w-full self-center text-2xl text-gray-400'>
+                    Start following people to see posts
+                </p>
+            ) : (
+                <div className="flex flex-col w-8/12 phone:w-full">
+                    {timelinePosts}
+                </div>
+            )
         ) : (
-            <p className='text-center w-8/12 phone:w-full self-center text-2xl text-gray-400'>
-                Start following people to see posts
-            </p>
+            <Instagram className='-mt-4' backgroundColor={'#d9d9d9'} foregroundColor={'#999'} />
     )
 }

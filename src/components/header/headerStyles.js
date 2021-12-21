@@ -13,7 +13,7 @@ export const Logo = styled(Link)`
     img {
         max-width: 150px;
         padding: 1em;
-        margin-left: 2em;
+        
     }
 `
 

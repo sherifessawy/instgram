@@ -13,6 +13,7 @@ export default function Header({children, ...rest}) {
     const navigate = useNavigate()
 
     return (
+        <div className='bg-white'>
         <Content {...rest} className="max-w-screen-lg mx-auto">
             <Logo to={PAGES.DASHBOARD}>
                 <img src={'/images/logo.png'} />
@@ -46,7 +47,7 @@ export default function Header({children, ...rest}) {
                     <div>
                         <Link to={`/p/${user.displayName}`}>
                             <img
-                                className="rounded-full h-8 w-8 flex ml-6 mr-12"
+                                className="rounded-full h-8 w-8 flex ml-6 mr-2"
                                 src={`/images/avatars/${user.displayName}.jpg`}
                                 onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} 
                                 alt={`${user.displayName} profile picture`}
@@ -61,5 +62,6 @@ export default function Header({children, ...rest}) {
                 </div>
             )}
         </Content>
+        </div>
     )
 }
