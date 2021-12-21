@@ -48,6 +48,7 @@ export default function Header({children, ...rest}) {
                             <img
                                 className="rounded-full h-8 w-8 flex ml-6 mr-12"
                                 src={`/images/avatars/${user.displayName}.jpg`}
+                                onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} 
                                 alt={`${user.displayName} profile picture`}
                             />
                         </Link>

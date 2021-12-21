@@ -51,13 +51,13 @@ export default function Sidebar({children, ...rest}) {
 }
 
 Sidebar.Profile = function SidebarProfile({children, src, alt, user, setSuggestedUsers, activeUser, ...rest}){
+    
     const {firebaseApp} = useContext(FirebaseContext)
     const db  = getFirestore(firebaseApp)
     async function followUser(){
         setSuggestedUsers( prev => (
             prev.filter(item => item.props.user.userId != user.userId)
         ))
-        
         const activeUserRef = doc(db, "users", activeUser.username)
         const profileRef = doc(db, "users", user.username)
         await updateDoc(activeUserRef, {
@@ -71,7 +71,7 @@ Sidebar.Profile = function SidebarProfile({children, src, alt, user, setSuggeste
     return(
         <Profile {...rest}>
             <Link to={`/p/${user.username}`} >
-                <img src={src} alt={`${user.fullName} photo`}/>
+                <img src={src} alt={`${user.fullName} photo`} onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} />
             </Link>
             <div>
                 <p>{user.username}</p>
