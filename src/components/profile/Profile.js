@@ -1,9 +1,12 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {Content, Header, Posts, Icons, PostFrame} from './profileStyles'
 import { getUserDataByusername } from '../../utils/getUserData'
 import {profilePosts} from '../../utils/get-post-data'
+import Form from '../form'
+import { FirebaseContext } from '../../context/firebase'
+import {getFirestore, doc, updateDoc, arrayUnion, arrayRemove} from 'firebase/firestore'
 
-function Profile({username}) {
+function Profile({username, activeUser}) {
     const [profileData, setProfileData] = useState()
     const [posts, setPosts] = useState()
     
@@ -14,7 +17,6 @@ function Profile({username}) {
     
     useEffect(async () => {
         if (profileData && profileData.userId){
-            console.log(profileData.userId)
             const res2 = await profilePosts(profileData.userId)
             setPosts(res2)
         }
@@ -23,15 +25,55 @@ function Profile({username}) {
     return (
         <div style={{background: '#fafafa'}}>
             <Content>
-                <Profile.Header profileData={profileData} posts={posts} />
+                <Profile.Header profileData={profileData} posts={posts} activeUserId={activeUser.userId} activeUsername={activeUser.username}/>
                 <Profile.Posts posts={posts} />
             </Content>
         </div>
     )
 }
 
-Profile.Header = function ProfileHeader({profileData, posts = []}){
+Profile.Header = function ProfileHeader({profileData, activeUserId, activeUsername, posts = []}){
+    const [isFollowedUser, setIsFollowedUsed] = useState(false)
+    const [followersCount, setFollowersCount] = useState(0)
     
+    const {firebaseApp} = useContext(FirebaseContext)
+    async function toggleFollow(){
+        const db = getFirestore(firebaseApp)
+        const profileRef = doc(db, "users", profileData.username)
+        const activeUserRef = doc(db, "users", activeUsername)
+        if(isFollowedUser){
+            setIsFollowedUsed(false)
+            setFollowersCount(prev => prev-1)
+            await updateDoc(profileRef, {
+                followers: arrayRemove(activeUserId)
+            })
+            await updateDoc(activeUserRef, {
+                following: arrayRemove(profileData.userId)
+            })
+        } else{
+            setIsFollowedUsed(true)
+            setFollowersCount(prev => prev+1)
+            await updateDoc(profileRef, {
+                followers: arrayUnion(activeUserId)
+            })
+            await updateDoc(activeUserRef, {
+                following: arrayUnion(profileData.userId)
+            })
+        }
+    }
+    
+    const followBtnText = isFollowedUser ? 'Unfollow' : 'Follow'
+
+    useEffect(() => {
+        if(profileData && profileData.followers.includes(activeUserId) && !isFollowedUser){
+            setIsFollowedUsed(true)
+        }
+        if(profileData && profileData.followers){
+            setFollowersCount(profileData.followers.length)
+        }
+    }, [profileData, activeUserId])
+    
+
     return profileData ? (
             <Header>
                 <img 
@@ -39,10 +81,21 @@ Profile.Header = function ProfileHeader({profileData, posts = []}){
                     alt={`${profileData.username} profile picture`}
                 />
                 <div className='flex flex-col justify-between h-40'>
-                    <p className='text-4xl'>{profileData.username}</p>
+                    <div className='flex'>
+                        <p className='text-4xl font-bold'>{profileData.username}</p>
+                        {profileData.username !== activeUsername && ( //to hide follow button in case the profile is the activeUser profile
+                            <Form.Button 
+                                width={40}
+                                onClick={() => toggleFollow()}
+                            >
+                                {followBtnText}
+                            </Form.Button>
+                            )}
+
+                    </div>
                     <div className='flex'>
                         <p><strong>{posts.length}</strong> posts</p>
-                        <p><strong>{profileData.followers.length}</strong> followers</p>
+                        <p><strong>{followersCount}</strong> followers</p>
                         <p><strong>{profileData.following.length}</strong> following</p>
                     </div>
                     <p className='text-xl font-bold'>{profileData.fullName}</p>
@@ -81,8 +134,6 @@ Profile.Posts = function ProfilePosts({posts = []}){
             setRenderPosts(allPosts)
         }
     }, [posts])
-    
-    //console.log(renderPosts)
     
     return posts.length > 0 ? (
         <Posts>

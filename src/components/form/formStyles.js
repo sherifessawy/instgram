@@ -34,7 +34,7 @@ export const Button = styled.button`
     background: #038cfc;
     color: white;
     font-weight: bold;
-    width: 100%;
+    width: ${({width}) => width ? width : '100'}%;
     margin-top: 0.5rem;
     padding: 3px;
     border-radius: 4px;
@@ -45,6 +45,7 @@ export const Button = styled.button`
 
     opacity: ${({disabled}) => disabled ? '0.5' : '1'};
     cursor: ${({disabled}) => disabled && 'unset'};
+    
 `
 
 export const Footer = styled.p`
