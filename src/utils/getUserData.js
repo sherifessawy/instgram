@@ -11,7 +11,7 @@ export async function getUserDataById(userId, isIncluded=true) {
     let userData = []
     const q = isIncluded ? 
         query(collection(db, "users"), where("userId", "==", userId)) //returns array of a user with specific userId
-        : query(collection(db, "users"), where("userId", "not-in", userId),  limit(4)) //returns array of max 4 users with userId that is not === the parameter userId (used to get suggested people to follow)
+        : query(collection(db, "users"), where("userId", "not-in", userId),  limit(8)) //returns array of max 4 users with userId that is not === the parameter userId (used to get suggested people to follow)
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
