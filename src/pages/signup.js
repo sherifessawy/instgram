@@ -40,7 +40,6 @@ export default function SignUp() {
         await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
-                console.log(userCredential)
                 const user = userCredential.user;
                 updateProfile(user, {displayName: username})
                 .then(async () => {
@@ -55,7 +54,7 @@ export default function SignUp() {
                         dateCreated: Date.now()
                     })
                 })
-                navigate(PAGES.DASHBOARD)
+                .then(() => navigate(PAGES.DASHBOARD))
             })
             .catch((error) => {
                 setEmail('')
