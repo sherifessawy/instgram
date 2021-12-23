@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as PAGES from '../constants/routes'
 import { FirebaseContext } from '../context/firebase';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import SpinnerLoader from '../components/loaders.js/Spinner';
 
 export default function Login() {
     useEffect(() => {
@@ -13,6 +14,7 @@ export default function Login() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const isValid = password === '' || email === '';
     
@@ -20,27 +22,30 @@ export default function Login() {
     const navigate = useNavigate()
     async function handleLogin(e) {
         e.preventDefault()
+        setLoading(true)
 
         const auth = getAuth(firebaseApp);
         await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
-                const user = userCredential.user;
+                //const user = userCredential.user;
                 navigate(PAGES.DASHBOARD)
             })
             .catch((error) => {
+                setLoading(false)
                 setEmail('')
                 setPassword('')
-                const errorCode = error.code;
                 const errorMessage = error.message;
                 setError(errorMessage)
             });
     }
 
-    return (
+    return loading ? (
+        <SpinnerLoader />
+    ) : (
         <div style={{background: '#fafafa'}}>
         <Form.Frame>
-            <img src='./images/iphone-with-profile.jpg' style={{width: '50%', maxWidth:'370px'}}/>
+            <img src='./images/iphone-with-profile.jpg' alt='iphone with profile' style={{width: '50%', maxWidth:'370px'}}/>
             <Form method="POST">
                 <Form.Image src='./images/logo.png'/>
                 <Form.Input 
