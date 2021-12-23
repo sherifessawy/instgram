@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef, useContext} from 'react'
 import { Content, Comment, Caption, Input, Button, LikeIcon } from '../post/postStyles'
 import {Link} from 'react-router-dom'
 import { doc, updateDoc, arrayUnion, getFirestore, arrayRemove } from "firebase/firestore"
 import { firebaseApp } from '../../lib/firebase'
-import useUserData from '../../hooks/useUserData'
 import { formatDistance } from 'date-fns'
 import {getUserDataById} from '../../utils/getUserData'
+import {UserContext} from '../../context/user'
 
 function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photoId, userId}, updateTimeline}) {
     const [commentInput, setCommentInput] = useState('')
@@ -13,7 +13,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
     const [tempComments, setTempComments] = useState(comments)
     const [postUser, setPostUser] = useState('')
 
-    const {user} = useUserData()
+    const {user} = useContext(UserContext)
 
     useEffect(async () => {
         const getPoster = await getUserDataById(userId)
@@ -35,7 +35,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
     useEffect(async () => {
         //adding new comment to post in firestore
         if (newComment){ // to prevent useEffect from making a firebase call on component mount
-            setTempComments(prevComments => [...prevComments, {comment: newComment, displayName:user.username}])
+            setTempComments(prevComments => [...prevComments, {comment: newComment, displayName:user.displayName}])
             
             setCommentInput('')
             setNewComment('')
@@ -43,7 +43,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
             const db  = getFirestore(firebaseApp)
             const docRef = doc(db, "photos", `photo${photoId}`);
             await updateDoc(docRef, {
-                comments: arrayUnion({displayName: user.username, comment:newComment})
+                comments: arrayUnion({displayName: user.displayName, comment:newComment})
             }).catch(err => console.log(err))
             
         }
@@ -74,7 +74,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
             </Link>
             <img src={imageSrc} alt="post image" />
             <div className='flex justify-between w-14 m-4'>
-                <Post.LikeIcon user={user} photoId={photoId} likes={likes} updateTimeline={updateTimeline}/> 
+                <Post.LikeIcon user={user} photoId={photoId} likes={likes} updateTimeline={updateTimeline} /> 
                 <Post.CommentIcon inputEl={inputEl} />
             </div>
             <p className="pl-4 pb-2 text-xs font-bold" >{likes.length} Likes</p>
@@ -103,19 +103,19 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
 }
 
 Post.LikeIcon = function PostLikeIcon({user, photoId, likes, updateTimeline}){
-    const [isLiked, setIsLiked] = useState(likes.includes(user.userId)) //is true if userId is existed in the photo likes array
-
+    const [isLiked, setIsLiked] = useState(likes.includes(user.uid)) //is true if Active User ID is existed in the photo likes array
+    
     const toggleLike = async () =>{
         const db  = getFirestore(firebaseApp)
         const docRef = doc(db, "photos", `photo${photoId}`)
         setIsLiked((prev) => !prev) //it's not preferable to setState here before doing the query to database as the behavoir might not be expected as we change isLiked and then we use it (it's prev value) in the following lines (updating the doc). however, this setState async operation did not came into effect when the following lines were excuted (based on multible trials) so i used it here for the following reason: A better user experience, as setting the state of isLiked after doing the firestore query led to a relativly larger lag which made the like icon changes shape with a relativly larger delay (update: see comment in following line)
         isLiked ? ( //isLiked? is a synchronous operation so setting the state of isliked before this operation would not affect it (i.e. isLiked value is still prev value not !prev)
             await updateDoc(docRef, {
-                likes: arrayRemove(user.userId)
+                likes: arrayRemove(user.uid)
             })
         ) : (
             await updateDoc(docRef, {
-                likes: arrayUnion(user.userId)
+                likes: arrayUnion(user.uid)
             })
         )
         updateTimeline(prev => !prev) //used to update timeline (parent component) when post is liked, or unliked, to show changes in likes count on screen real time
