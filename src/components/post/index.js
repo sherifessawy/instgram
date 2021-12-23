@@ -1,21 +1,29 @@
-import React, {useState, useEffect, useContext, useRef} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import { Content, Comment, Caption, Input, Button, LikeIcon } from '../post/postStyles'
 import {Link} from 'react-router-dom'
 import { doc, updateDoc, arrayUnion, getFirestore, arrayRemove } from "firebase/firestore"
 import { firebaseApp } from '../../lib/firebase'
-import {UserContext} from '../../context/user'
+import useUserData from '../../hooks/useUserData'
 import { formatDistance } from 'date-fns'
+import {getUserDataById} from '../../utils/getUserData'
 
-function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photoId}, updateTimeline}) {
+function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photoId, userId}, updateTimeline}) {
     const [commentInput, setCommentInput] = useState('')
     const [newComment, setNewComment] = useState('')
-    const {user} = useContext(UserContext)
+    const [tempComments, setTempComments] = useState(comments)
+    const [postUser, setPostUser] = useState('')
+
+    const {user} = useUserData()
+
+    useEffect(async () => {
+        const getPoster = await getUserDataById(userId)
+        setPostUser(getPoster[0].username)
+    }, [userId])
+
     const inputEl = useRef(null)
 
-    const postUser = {displayName: 'raphael'} //replace with poster from firebase
-    
     const postCommentsVisibility = (sliceValue = -3) => (
-        comments.slice(sliceValue).map( (comment, index) => (
+        tempComments.slice(sliceValue).map( (comment, index) => (
             <Comment key={index} className="ml-4" >
                 <Link to={`/p/${comment.displayName}`} className='font-bold mr-2'>{comment.displayName}</Link> 
                 {comment.comment}
@@ -24,38 +32,45 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
     )
     const [postComments, setPostComments] = useState(postCommentsVisibility)
     
-    
     useEffect(async () => {
         //adding new comment to post in firestore
         if (newComment){ // to prevent useEffect from making a firebase call on component mount
+            setTempComments(prevComments => [...prevComments, {comment: newComment, displayName:user.username}])
+            
+            setCommentInput('')
+            setNewComment('')
+            
             const db  = getFirestore(firebaseApp)
             const docRef = doc(db, "photos", `photo${photoId}`);
             await updateDoc(docRef, {
-                comments: arrayUnion({displayName: user.displayName, comment:newComment})
-            })
-            setCommentInput('')
-            setNewComment('')
-            updateTimeline((prev) => !prev) //used to update timeline (parent component) when new comment is posted to show changes on screen real time
+                comments: arrayUnion({displayName: user.username, comment:newComment})
+            }).catch(err => console.log(err))
+            
         }
     }, [newComment])
     
+    useEffect(() => {
+        setPostComments(() => postCommentsVisibility(-3))
+    }, [tempComments])
+
     function displayComments(){
         if (postComments.length <= 3){
             setPostComments(() => postCommentsVisibility(0)) //returns the complete comments array to be viewed on the post
         } else if (postComments.length > 3){
             setPostComments(() => postCommentsVisibility(-3)) 
         }
+        updateTimeline(prev => !prev) //used to update timeline (parent component) when post is liked, or unliked, to show changes in comments on screen real time
     }
 
     return (
         <Content>
-            <Link to={`/p/${postUser.displayName}`} className='flex items-center'>
+            <Link to={`/p/${postUser}`} className='flex items-center'>
                 <img
                     className="rounded-full h-12 w-12 flex m-3 ml-6"
-                    src={`/images/avatars/${postUser.displayName}.jpg`}
-                    alt={`${postUser.displayName} profile picture`}
+                    src={`/images/avatars/${postUser}.jpg`}
+                    alt={`${postUser} profile picture`}
                 />
-                <p className='font-bold'>{postUser.displayName}</p>
+                <p className='font-bold'>{postUser}</p>
             </Link>
             <img src={imageSrc} alt="post image" />
             <div className='flex justify-between w-14 m-4'>
@@ -64,13 +79,13 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
             </div>
             <p className="pl-4 pb-2 text-xs font-bold" >{likes.length} Likes</p>
             <Caption>
-                <Link to={`/p/${postUser.displayName}`} className='font-bold mr-2'>{postUser.displayName}</Link> 
+                <Link to={`/p/${postUser}`} className='font-bold mr-2'>{postUser}</Link> 
                 {caption}
             </Caption>
             {
-                comments.length > 3 && (
+                tempComments.length > 3 && (
                     <p className="pl-4 cursor-pointer text-gray-600" onClick={() => displayComments()}>
-                        {postComments.length <= 3 ? `View all ${comments.length} comments` : 'Hide comments'}
+                        {postComments.length <= 3 ? `View all ${tempComments.length} comments` : 'Hide comments'}
                     </p>
                 )
             }
@@ -88,7 +103,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
 }
 
 Post.LikeIcon = function PostLikeIcon({user, photoId, likes, updateTimeline}){
-    const [isLiked, setIsLiked] = useState(likes.includes(user.uid)) //is true if userId is existed in the photo likes array
+    const [isLiked, setIsLiked] = useState(likes.includes(user.userId)) //is true if userId is existed in the photo likes array
 
     const toggleLike = async () =>{
         const db  = getFirestore(firebaseApp)
@@ -96,11 +111,11 @@ Post.LikeIcon = function PostLikeIcon({user, photoId, likes, updateTimeline}){
         setIsLiked((prev) => !prev) //it's not preferable to setState here before doing the query to database as the behavoir might not be expected as we change isLiked and then we use it (it's prev value) in the following lines (updating the doc). however, this setState async operation did not came into effect when the following lines were excuted (based on multible trials) so i used it here for the following reason: A better user experience, as setting the state of isLiked after doing the firestore query led to a relativly larger lag which made the like icon changes shape with a relativly larger delay (update: see comment in following line)
         isLiked ? ( //isLiked? is a synchronous operation so setting the state of isliked before this operation would not affect it (i.e. isLiked value is still prev value not !prev)
             await updateDoc(docRef, {
-                likes: arrayRemove(user.uid)
+                likes: arrayRemove(user.userId)
             })
         ) : (
             await updateDoc(docRef, {
-                likes: arrayUnion(user.uid)
+                likes: arrayUnion(user.userId)
             })
         )
         updateTimeline(prev => !prev) //used to update timeline (parent component) when post is liked, or unliked, to show changes in likes count on screen real time
