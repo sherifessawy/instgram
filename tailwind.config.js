@@ -5,6 +5,7 @@ module.exports = {
     screens: {
       'phone': {'max':'720px'},
       'lg': '1024px',
+      'small': {'max':'400px'},
     },
     extend: {},
   },

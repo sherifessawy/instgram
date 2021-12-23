@@ -80,12 +80,12 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
                     onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} 
                     alt={`${profileData.username} profile picture`}
                 />
-                <div className='flex flex-col justify-between h-40'>
+                <div className='flex flex-col justify-between h-40 phone:h-28'>
                     <div className='flex'>
                         <p className='text-4xl font-bold'>{profileData.username}</p>
                         {(profileData.username !== activeUsername && activeUsername) && ( //first check to hide follow button in case the profile is the activeUser profile and second one is to hide the follow button in case the visitor is not logged in
                             <Form.Button 
-                                width={40}
+                                width={45}
                                 onClick={() => toggleFollow()}
                             >
                                 {followBtnText}
@@ -93,12 +93,12 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
                             )}
 
                     </div>
-                    <div className='flex'>
+                    <div className='flex small:flex-col'>
                         <p><strong>{posts.length}</strong> posts</p>
                         <p><strong>{followersCount}</strong> followers</p>
                         <p><strong>{profileData.following.length}</strong> following</p>
                     </div>
-                    <p className='text-xl font-bold'>{profileData.fullName}</p>
+                    <p className='text-xl font-bold phone:text-sm'>{profileData.fullName}</p>
                 </div>
             </Header>
 

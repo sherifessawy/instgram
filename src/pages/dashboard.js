@@ -11,7 +11,7 @@ function Dashboard() {
     return (
         <div className="bg-gray-100">
             <Header />
-            <div className="flex justify-between container mx-auto w-11/12 max-w-screen-lg mt-8 pb-16">
+            <div className="flex phone:flex-col justify-between container mx-auto w-11/12 max-w-screen-lg mt-8 pb-16">
                 <Timeline />
                 <Sidebar />
             </div>

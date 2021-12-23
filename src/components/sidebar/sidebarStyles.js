@@ -4,8 +4,9 @@ export const Content = styled.div`
     width: 30%;
 
     @media(max-width: 720px){
-        display: none;
+        width: 100%;
     }
+    
 `
 
 export const Suggestions = styled.div`
@@ -26,6 +27,10 @@ export const Profile = styled.div`
 
     p:first-of-type{
         font-weight: bold;
+    }
+
+    @media(max-width: 720px){
+        ${({dontDisplayForPhones}) => dontDisplayForPhones && 'display: none;'}
     }
 `
 

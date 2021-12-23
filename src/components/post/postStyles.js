@@ -34,6 +34,10 @@ export const Button = styled.button`
     }
 
     ${({disabled}) => disabled && 'color:grey; opacity: 0.75; cursor:unset; &:hover{color: grey}'}
+
+    @media(max-width: 380px){
+        
+    }
 `
 
 export const LikeIcon = styled.div`

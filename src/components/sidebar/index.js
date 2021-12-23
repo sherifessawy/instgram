@@ -37,6 +37,7 @@ export default function Sidebar({children, ...rest}) {
                 src={`/images/avatars/${user.username}.jpg`} 
                 alt={`${user.fullName} photo`}
                 user={user}
+                dontDisplayForPhones
             /> ) : (
             <SidebarLoader className='mt-4' />
             )}

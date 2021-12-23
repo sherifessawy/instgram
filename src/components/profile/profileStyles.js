@@ -11,9 +11,10 @@ export const Content = styled.div`
 export const Header = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 3em;
+    margin: 0 auto 3em;
     padding-bottom: 4em;
     border-bottom: 1px solid grey;
+    max-width: 95%;
 
     img{
         border-radius: 50%;
@@ -31,6 +32,11 @@ export const Header = styled.div`
             margin-right: unset;
             padding: 2em;
             width: 140px;
+        }
+
+        div div p{
+            margin-right: 0.5em;
+            font-size: 1rem;
         }
     }
 `
