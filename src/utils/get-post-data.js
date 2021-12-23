@@ -10,8 +10,8 @@ export async function FollowedUsersPosts(followedUserId = null){
 
     const db = getFirestore(firebaseApp)
     let postData = []
-    console.log(followedUserId)
-    const q = query(collection(db, "photos"), where("userId", "==", followedUserId));
+
+    const q = query(collection(db, "photos"), where("userId", "in", followedUserId)); //fetching all posts of followed users
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
@@ -23,7 +23,7 @@ export async function FollowedUsersPosts(followedUserId = null){
 }
  
 export async function profilePosts(userId){
-    //queries the database and returns posts for followed users only
+    //queries the database and returns user profile posts
     const db = getFirestore(firebaseApp)
     let postData = []
 

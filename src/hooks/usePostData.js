@@ -10,7 +10,7 @@ function usePostData(recievedUpdateFromTimeline) {
     useEffect(() => {
         if (user && user.following){
             async function getPostObjData () {
-                const res = await FollowedUsersPosts(user.following[0]) //for now the user only follows one person this part to be modified later to return multipile followed users posts
+                const res = await FollowedUsersPosts(user.following) //passing an array of all followed profiles
                 setPosts(res)
             }
             getPostObjData()
