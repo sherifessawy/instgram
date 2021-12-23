@@ -5,6 +5,7 @@ import {profilePosts} from '../../utils/get-post-data'
 import Form from '../form'
 import { FirebaseContext } from '../../context/firebase'
 import {getFirestore, doc, updateDoc, arrayUnion, arrayRemove} from 'firebase/firestore'
+import {HeaderLoader} from './profile-loader'
 
 function Profile({username, activeUser}) {
     const [profileData, setProfileData] = useState()
@@ -103,7 +104,7 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
             </Header>
 
         ) : (
-            null
+            <HeaderLoader />
         )
 }
 
