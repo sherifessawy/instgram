@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import * as PAGES from './constants/routes'
 import useAuthListener from './hooks/useAuthListener'
 import { UserContext } from './context/user'
+import { Camera } from './styles/icons'
 
 const Dashboard = lazy(() => import ('./pages/dashboard'));
 const Login = lazy(() => import ('./pages/login'));
@@ -16,7 +17,7 @@ function App() {
     return (
         <UserContext.Provider value={{ user }}>
             <Router>
-                <Suspense fallback={<p>Loading...</p>}>
+                <Suspense fallback={<Camera />}>
                     <Routes>
                         <Route path={PAGES.LOGIN} element={<Login/>} />
                         <Route path={PAGES.SIGN_UP} element={<SignUp/>} />
