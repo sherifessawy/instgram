@@ -6,6 +6,7 @@ import { FirebaseContext } from '../context/firebase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, getFirestore} from 'firebase/firestore'
 import doesUsernameExist from '../utils/usernameCheck';
+import SpinnerLoader from '../components/loaders.js/Spinner';
 
 export default function SignUp() {
     useEffect(() => {
@@ -17,6 +18,7 @@ export default function SignUp() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const isValid = password === '' || email === '' || fullName === '' || username === '';
     
@@ -25,6 +27,7 @@ export default function SignUp() {
 
     async function handleSignup(e) {
         e.preventDefault()
+        setLoading(true)
 
         const db = getFirestore(firebaseApp)
         const auth = getAuth(firebaseApp);
@@ -57,6 +60,7 @@ export default function SignUp() {
                 .then(() => navigate(PAGES.DASHBOARD))
             })
             .catch((error) => {
+                setLoading(false)
                 setEmail('')
                 setPassword('')
                 const errorCode = error.code;
@@ -65,7 +69,9 @@ export default function SignUp() {
             });
     }
 
-    return (
+    return loading ? (
+        <SpinnerLoader />
+    ) : (
         <div style={{background: '#fafafa'}}>
         <Form.Frame>
             <Form method="POST">
