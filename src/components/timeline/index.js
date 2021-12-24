@@ -27,6 +27,6 @@ export default function Timeline() {
                 </div>
             )
         ) : (
-            <Instagram className='-mt-4' backgroundColor={'#d9d9d9'} foregroundColor={'#999'} />
+            <Instagram className='-mt-4 max-w-2xl' backgroundColor={'#d9d9d9'} foregroundColor={'#999'} />
     )
 }

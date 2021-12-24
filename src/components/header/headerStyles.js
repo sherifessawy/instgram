@@ -33,4 +33,10 @@ export const Button = styled(Link)`
     &:hover{
         box-shadow: 1px 1px 5px #888888;
     }
+
+    @media(max-width: 480px){
+        margin: 0;
+        &:last-of-type{
+            margin-right: 1rem;
+    }
 `

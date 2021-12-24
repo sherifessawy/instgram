@@ -81,7 +81,7 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
                     onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} 
                     alt={`${profileData.username} profile picture`}
                 />
-                <div className='flex flex-col justify-between h-40 phone:h-28'>
+                <div className='flex flex-col justify-between h-40 phone:h-28 phone:justify-center'>
                     <div className='flex'>
                         <p className='text-4xl font-bold'>{profileData.username}</p>
                         {(profileData.username !== activeUsername && activeUsername) && ( //first check to hide follow button in case the profile is the activeUser profile and second one is to hide the follow button in case the visitor is not logged in
@@ -99,7 +99,7 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
                         <p><strong>{followersCount}</strong> followers</p>
                         <p><strong>{profileData.following.length}</strong> following</p>
                     </div>
-                    <p className='text-xl font-bold phone:text-sm'>{profileData.fullName}</p>
+                    <p className='text-xl font-bold phone:text-sm phone:mt-2'>{profileData.fullName}</p>
                 </div>
             </Header>
 
