@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/form/formStyles';
+import Header from '../components/header';
 
 export default function NotFound() {
     useEffect(() => {
@@ -9,9 +10,10 @@ export default function NotFound() {
 
 
     return (
-        <div style={{backgroundImage: 'url("./images/404.jpg")', backgroundSize: 'cover'}} className="h-screen">
-            <p className="mx-8 text-xs pt-8">image by macrovector/Freepik</p>
-            <div className="mx-auto max-w-screen-lg w-48 py-48">
+        <div className="h-screen">
+            <Header/>
+            <h1 className="text-center text-2xl my-12">Page Not Found</h1>
+            <div className="mx-auto max-w-screen-lg w-48 my-12">
                 <Link to="/" >
                     <Button>Take me to homepage</Button>             
                 </Link>

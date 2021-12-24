@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import * as PAGES from './constants/routes'
 import useAuthListener from './hooks/useAuthListener'
 import { UserContext } from './context/user'
@@ -19,11 +19,20 @@ function App() {
             <Router>
                 <Suspense fallback={<Camera />}>
                     <Routes>
-                        <Route path={PAGES.LOGIN} element={<Login/>} />
-                        <Route path={PAGES.SIGN_UP} element={<SignUp/>} />
+                        <Route 
+                            path={PAGES.LOGIN} 
+                            element={!user ? <Login/> : <Navigate to={PAGES.DASHBOARD} />} //navigate to dashboard if the user is signed in
+                        />
+                        <Route 
+                            path={PAGES.SIGN_UP} 
+                            element={!user ? <SignUp/> : <Navigate to={PAGES.DASHBOARD} /> } //navigate to dashboard if the user is signed in
+                        />
                         <Route path={PAGES.PROFILE} element={<Profile/>} />
-                        <Route path={PAGES.NOT_FOUND} element={<NotFound/>} />
-                        <Route path={PAGES.DASHBOARD} element={<Dashboard/>} exact/>
+                        <Route
+                            path={PAGES.DASHBOARD} 
+                            element={user ? <Dashboard/> : <Navigate to={PAGES.LOGIN} />} //Require Auth 
+                        />
+                        <Route path='*' element={<NotFound/>} />
                     </Routes>
                 </Suspense>
             </Router>
