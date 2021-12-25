@@ -19,6 +19,8 @@ export async function FollowedUsersPosts(followedUsersId = []){
         postData.push(doc.data()) 
     });
 
+    if (postData.length === 0) { return "no posts" } //return "no posts" if the followed people did not post anything
+
     return postData;
 }
  

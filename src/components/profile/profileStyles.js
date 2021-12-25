@@ -93,3 +93,65 @@ export const PostFrame = styled.div`
         }
     }
 `
+
+//profile-post-feature styles
+
+export const Expand = styled.div`
+    background: rgba(0,0,0,0);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    cursor: pointer;
+    
+    &:hover{
+        background: rgba(0,0,0,0.1);
+    }
+`
+
+export const Overlay = styled.div`
+    background: rgba(0,0,0,0.6);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 100vh;
+`
+
+export const PostLayer = styled.div`
+    max-width: 95%;
+    transform: scale(0.9, 0.9); 
+    margin: 0 auto;
+    z-index: 10;
+    position: fixed;
+    top: -25px;
+    left: 0;
+    right: 0;
+    
+    @media(min-width: 400px){
+        max-width: 400px;
+        top: -70px;
+        transform: scale(0.8, 0.8); 
+    }
+`
+
+export const CloseButton = styled.div`
+    position: absolute;
+    font-size: 2rem;
+    font-weight: bold;
+    top: 10px;
+    bottom: 0;
+    left: 350px;
+    right: 0;
+    cursor: pointer;
+
+    &:hover{
+        color: grey;
+    }
+
+    @media(max-width: 480px){
+        left: 320px;
+    }
+`

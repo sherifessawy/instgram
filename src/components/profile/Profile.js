@@ -6,6 +6,7 @@ import Form from '../form'
 import { FirebaseContext } from '../../context/firebase'
 import {getFirestore, doc, updateDoc, arrayUnion, arrayRemove} from 'firebase/firestore'
 import {HeaderLoader} from './profile-loader'
+import { OpenPost } from './profile-post-feature'
 
 function Profile({username, activeUser}) {
     const [profileData, setProfileData] = useState()
@@ -130,6 +131,7 @@ Profile.Posts = function ProfilePosts({posts = []}){
                             <p>{post.comments.length}</p>
                         </div>
                     </Icons>
+                    <OpenPost post={post}/>
                 </PostFrame>
             ))
             setRenderPosts(allPosts)
