@@ -3,7 +3,7 @@ import {FollowedUsersPosts} from '../utils/get-post-data';
 import useUserData from './useUserData';
 
 
-function usePostData(recievedUpdateFromTimeline) {
+function usePostData() {
     const [posts, setPosts] = useState()
     const {user} = useUserData() //get authed user data
     
@@ -17,7 +17,7 @@ function usePostData(recievedUpdateFromTimeline) {
         } else {
             setPosts(null)
         }
-    }, [user, recievedUpdateFromTimeline])
+    }, [user])
 
     return {posts}
 }

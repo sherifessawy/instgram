@@ -1,18 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Post from '../post';
 import usePostData from '../../hooks/usePostData';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Instagram } from 'react-content-loader'
 
 export default function Timeline() {
-    const [timeline, updateTimeline] = useState(false) //used to update timeline when new comment is posted to show changes on screen real time
-    
-    const {posts} = usePostData(timeline) // passing the timeline changing state to make the hook do a query to firestore and get updated Post data
+    const {posts} = usePostData() // passing the timeline changing state to make the hook do a query to firestore and get updated Post data
     
     let timelinePosts = null
     if (posts && posts !== "no posts") {
         timelinePosts = posts.map(postInfo => (
-            <Post key={postInfo.photoId} postInfo={postInfo} updateTimeline={updateTimeline}/>)
+            <Post key={postInfo.photoId} postInfo={postInfo} />)
         )
     }
 

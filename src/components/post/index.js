@@ -7,12 +7,13 @@ import { formatDistance } from 'date-fns'
 import {getUserDataById} from '../../utils/getUserData'
 import {UserContext} from '../../context/user'
 
-function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photoId, userId}, updateTimeline}) {
+function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photoId, userId}}) {
     const [commentInput, setCommentInput] = useState('')
     const [newComment, setNewComment] = useState('')
     const [tempComments, setTempComments] = useState(comments)
     const [postUser, setPostUser] = useState('')
-
+    const [tempLikes, settempLikes] = useState(likes)
+   
     const {user} = useContext(UserContext)
 
     useEffect(async () => {
@@ -59,7 +60,6 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
         } else if (postComments.length > 3){
             setPostComments(() => postCommentsVisibility(-3)) 
         }
-        updateTimeline(prev => !prev) //used to update timeline (parent component) when post is liked, or unliked, to show changes in comments on screen real time
     }
 
     return (
@@ -72,16 +72,26 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
                 />
                 <p className='font-bold'>{postUser}</p>
             </Link>
+
             <img src={imageSrc} alt="post image" />
+
             <div className='flex justify-between w-14 m-4'>
-                <Post.LikeIcon user={user} photoId={photoId} likes={likes} updateTimeline={updateTimeline} /> 
+                <Post.LikeIcon 
+                    user={user} 
+                    photoId={photoId} 
+                    likes={likes} 
+                    settempLikes={settempLikes} 
+                /> 
                 <Post.CommentIcon inputEl={inputEl} />
             </div>
-            <p className="pl-4 pb-2 text-xs font-bold" >{likes.length} Likes</p>
+
+            <p className="pl-4 pb-2 text-xs font-bold" >{tempLikes.length} Likes</p>
+
             <Caption>
                 <Link to={`/p/${postUser}`} className='font-bold mr-2'>{postUser}</Link> 
                 {caption}
             </Caption>
+
             {
                 tempComments.length > 3 && (
                     <p className="pl-4 cursor-pointer text-gray-600" onClick={() => displayComments()}>
@@ -90,7 +100,9 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
                 )
             }
             {postComments}
+
             <p className="p-4 text-xs" >{formatDistance(dateCreated, new Date())} ago</p>
+
             <Input 
                 placeholder='Add a comment ...'
                 value = {commentInput}
@@ -102,13 +114,16 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
     )
 }
 
-Post.LikeIcon = function PostLikeIcon({user, photoId, likes, updateTimeline}){
+Post.LikeIcon = function PostLikeIcon({user, photoId, likes, settempLikes}){
     const [isLiked, setIsLiked] = useState(likes.includes(user.uid)) //is true if Active User ID is existed in the photo likes array
     
+    const db  = getFirestore(firebaseApp)
+    const docRef = doc(db, "photos", `photo${photoId}`)
     const toggleLike = async () =>{
-        const db  = getFirestore(firebaseApp)
-        const docRef = doc(db, "photos", `photo${photoId}`)
-        setIsLiked((prev) => !prev) //it's not preferable to setState here before doing the query to database as the behavoir might not be expected as we change isLiked and then we use it (it's prev value) in the following lines (updating the doc). however, this setState async operation did not came into effect when the following lines were excuted (based on multible trials) so i used it here for the following reason: A better user experience, as setting the state of isLiked after doing the firestore query led to a relativly larger lag which made the like icon changes shape with a relativly larger delay (update: see comment in following line)
+        setIsLiked((prev) => !prev) //it's not preferable to setState here before doing the query to database as the behavoir might not be expected as we change isLiked and then we use it (it's prev value) in the following lines (updating the doc). however, this setState async operation did not came into effect when the following lines were excuted (based on multible trials) so i used it here for the following reason: A better user experience, as setting the state of isLiked after doing the firestore query led to a relativly larger lag which made the like icon changes shape with a relativly larger delay (update: see comment in following line)    
+        
+        isLiked ?  settempLikes(prev => [...prev].filter(item => item !== user.uid)) : settempLikes(prev => [...prev, user.uid])
+        
         isLiked ? ( //isLiked? is a synchronous operation so setting the state of isliked before this operation would not affect it (i.e. isLiked value is still prev value not !prev)
             await updateDoc(docRef, {
                 likes: arrayRemove(user.uid)
@@ -118,7 +133,6 @@ Post.LikeIcon = function PostLikeIcon({user, photoId, likes, updateTimeline}){
                 likes: arrayUnion(user.uid)
             })
         )
-        updateTimeline(prev => !prev) //used to update timeline (parent component) when post is liked, or unliked, to show changes in likes count on screen real time
     }
 
     return(

@@ -11,6 +11,7 @@ import { OpenPost } from './profile-post-feature'
 function Profile({username, activeUser}) {
     const [profileData, setProfileData] = useState()
     const [posts, setPosts] = useState()
+    const [updateProfileData, setUpdateProfileData] = useState(false)
     
     useEffect(async () => {
         const res = await getUserDataByusername(username)
@@ -22,13 +23,13 @@ function Profile({username, activeUser}) {
             const res2 = await profilePosts(profileData.userId)
             setPosts(res2)
         }
-    }, [profileData])
+    }, [profileData, updateProfileData])
 
     return (
         <div style={{background: '#fafafa'}}>
             <Content>
                 <Profile.Header profileData={profileData} posts={posts} activeUserId={activeUser.userId} activeUsername={activeUser.username}/>
-                <Profile.Posts posts={posts} />
+                <Profile.Posts posts={posts} setUpdateProfileData={setUpdateProfileData}/>
             </Content>
         </div>
     )
@@ -109,7 +110,7 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
         )
 }
 
-Profile.Posts = function ProfilePosts({posts = []}){
+Profile.Posts = function ProfilePosts({posts = [], setUpdateProfileData}){
     const [renderPosts, setRenderPosts] = useState()
     
     useEffect(() => {
@@ -131,7 +132,7 @@ Profile.Posts = function ProfilePosts({posts = []}){
                             <p>{post.comments.length}</p>
                         </div>
                     </Icons>
-                    <OpenPost post={post}/>
+                    <OpenPost post={post} setUpdateProfileData={setUpdateProfileData}/>
                 </PostFrame>
             ))
             setRenderPosts(allPosts)

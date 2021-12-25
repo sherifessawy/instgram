@@ -142,11 +142,9 @@ export const CloseButton = styled.div`
     font-size: 2rem;
     font-weight: bold;
     top: 10px;
-    bottom: 0;
     left: 350px;
     right: 0;
     cursor: pointer;
-
     &:hover{
         color: grey;
     }
