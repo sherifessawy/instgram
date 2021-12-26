@@ -46,3 +46,9 @@ export const LikeIcon = styled.div`
         cursor: pointer;
     }
 `
+
+export const CommentsDiv = styled.div`
+    max-height: 100px;
+    overflow: auto;
+     
+`

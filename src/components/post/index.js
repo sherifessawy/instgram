@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, useContext} from 'react'
-import { Content, Comment, Caption, Input, Button, LikeIcon } from '../post/postStyles'
+import { Content, Comment, Caption, Input, Button, LikeIcon, CommentsDiv } from '../post/postStyles'
 import {Link} from 'react-router-dom'
 import { doc, updateDoc, arrayUnion, getFirestore, arrayRemove } from "firebase/firestore"
 import { firebaseApp } from '../../lib/firebase'
@@ -99,7 +99,9 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
                     </p>
                 )
             }
-            {postComments}
+            <CommentsDiv>
+                {postComments}
+            </CommentsDiv>
 
             <p className="p-4 text-xs" >{formatDistance(dateCreated, new Date())} ago</p>
 
