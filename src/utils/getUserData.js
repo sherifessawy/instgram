@@ -35,3 +35,19 @@ export async function getUserDataByusername(username) {
 
     return userData; 
 }
+
+export async function getContactsDataById(usersId) {
+
+    const db = getFirestore(firebaseApp)
+    let usersData = []
+    const q = 
+        query(collection(db, "users"), where("userId", "in", usersId)) //returns array of users with specific userId
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        //console.log(doc.id, " => ", doc.data());
+        usersData.push(doc.data()) 
+    });
+
+    return usersData; 
+}

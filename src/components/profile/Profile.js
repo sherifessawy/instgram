@@ -1,12 +1,13 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {Content, Header, Posts, Icons, PostFrame} from './profileStyles'
-import { getUserDataByusername } from '../../utils/getUserData'
+import { getUserDataByusername, getContactsDataById } from '../../utils/getUserData'
 import {profilePosts} from '../../utils/get-post-data'
 import Form from '../form'
 import { FirebaseContext } from '../../context/firebase'
 import {getFirestore, doc, updateDoc, arrayUnion, arrayRemove} from 'firebase/firestore'
 import {HeaderLoader} from './profile-loader'
 import { OpenPost } from './profile-post-feature'
+import {ShowContacts} from './profile-header-feature'
 
 function Profile({username, activeUser}) {
     const [profileData, setProfileData] = useState()
@@ -16,7 +17,7 @@ function Profile({username, activeUser}) {
     useEffect(async () => {
         const res = await getUserDataByusername(username)
         setProfileData(res)
-    }, [username])
+    }, [username, updateProfileData])
     
     useEffect(async () => {
         if (profileData && profileData.userId){
@@ -25,18 +26,26 @@ function Profile({username, activeUser}) {
         }
     }, [profileData, updateProfileData])
 
+    
+
     return (
         <div style={{background: '#fafafa'}}>
             <Content>
-                <Profile.Header profileData={profileData} posts={posts} activeUserId={activeUser.userId} activeUsername={activeUser.username}/>
+                <Profile.Header 
+                    profileData={profileData} 
+                    posts={posts} 
+                    activeUserId={activeUser.userId} 
+                    activeUsername={activeUser.username}
+                    setUpdateProfileData={setUpdateProfileData}
+                />
                 <Profile.Posts posts={posts} setUpdateProfileData={setUpdateProfileData}/>
             </Content>
         </div>
     )
 }
 
-Profile.Header = function ProfileHeader({profileData, activeUserId, activeUsername, posts = []}){
-    const [isFollowedUser, setIsFollowedUsed] = useState(false)
+Profile.Header = function ProfileHeader({profileData, activeUserId, activeUsername, posts = [], setUpdateProfileData}){
+    const [isFollowedUser, setIsFollowedUser] = useState(false)
     const [followersCount, setFollowersCount] = useState(0)
     
     const {firebaseApp} = useContext(FirebaseContext)
@@ -45,7 +54,7 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
         const profileRef = doc(db, "users", profileData.username)
         const activeUserRef = doc(db, "users", activeUsername)
         if(isFollowedUser){
-            setIsFollowedUsed(false)
+            setIsFollowedUser(false)
             setFollowersCount(prev => prev-1)
             await updateDoc(profileRef, {
                 followers: arrayRemove(activeUserId)
@@ -54,7 +63,7 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
                 following: arrayRemove(profileData.userId)
             })
         } else{
-            setIsFollowedUsed(true)
+            setIsFollowedUser(true)
             setFollowersCount(prev => prev+1)
             await updateDoc(profileRef, {
                 followers: arrayUnion(activeUserId)
@@ -63,13 +72,14 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
                 following: arrayUnion(profileData.userId)
             })
         }
+        setUpdateProfileData(prev => !prev) //update profile after doing the database query
     }
     
     const followBtnText = isFollowedUser ? 'Unfollow' : 'Follow'
 
     useEffect(() => {
         if(profileData && profileData.followers.includes(activeUserId) && !isFollowedUser){
-            setIsFollowedUsed(true)
+            setIsFollowedUser(true)
         }
         if(profileData && profileData.followers){
             setFollowersCount(profileData.followers.length)
@@ -98,13 +108,19 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
                     </div>
                     <div className='flex small:flex-col'>
                         <p><strong>{posts.length}</strong> posts</p>
-                        <p><strong>{followersCount}</strong> followers</p>
-                        <p><strong>{profileData.following.length}</strong> following</p>
+                        <ShowContacts 
+                            targetContacts={'followers'} 
+                            profileData={profileData} 
+                            followersCount={followersCount} 
+                        />
+                        <ShowContacts 
+                            targetContacts={'following'} 
+                            profileData={profileData} 
+                        />
                     </div>
                     <p className='text-xl font-bold phone:text-sm phone:mt-2'>{profileData.fullName}</p>
                 </div>
             </Header>
-
         ) : (
             <HeaderLoader />
         )

@@ -16,7 +16,7 @@ export function OpenPost({post, setUpdateProfileData}) {
                 <Overlay onClick={() => handleClick()} />
                 <PostLayer>
                     <Post postInfo={post}/>
-                    <CloseButton onClick={() => setExpand(false)}>X</CloseButton>
+                    <CloseButton onClick={() => handleClick()}>x</CloseButton>
                 </PostLayer>
             </>
         ,document.body)

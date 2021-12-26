@@ -27,6 +27,13 @@ export const Header = styled.div`
         font-size: 1.4rem;
     }
 
+    .contacts{
+        &:hover{
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+
     @media(max-width: 600px){
         img{
             margin-right: unset;
@@ -141,7 +148,7 @@ export const CloseButton = styled.div`
     position: absolute;
     font-size: 2rem;
     font-weight: bold;
-    top: 10px;
+    top: 9px;
     left: 350px;
     right: 0;
     cursor: pointer;
@@ -149,7 +156,54 @@ export const CloseButton = styled.div`
         color: grey;
     }
 
-    @media(max-width: 480px){
+    @media(max-width: 400px){
         left: 320px;
+    }
+`
+
+// profile-header-feature styles
+
+export const ContactsLayer = styled.div`
+    z-index: 10;
+    padding: 2em 1.5em;
+    border-radius: 15px;
+    position: fixed;
+    background: white;
+    top: 5%;
+    left: 0;
+    right: 0;
+    max-width: 400px;
+   
+    margin: 0 auto;
+    max-height: 480px;
+    overflow: auto;
+
+    .contacts-text{
+        font-weight: bold;
+        text-align: center;
+        background: grey;
+        border-radius: 20px;
+        color: white;
+        margin-bottom: 3em;
+    }
+`
+
+export const CloseContacts = styled.div`
+    position: absolute;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 11;
+    top: 65px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    max-width: 352px;
+    border-radius: 20px;
+    color: white;
+    background: maroon;
+    cursor: pointer;
+    &:hover{
+        color: grey;
     }
 `
