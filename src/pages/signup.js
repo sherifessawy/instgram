@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as PAGES from '../constants/routes'
 import { FirebaseContext } from '../context/firebase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc, getFirestore} from 'firebase/firestore'
+import { doc, setDoc, getFirestore, arrayUnion, updateDoc} from 'firebase/firestore'
 import doesUsernameExist from '../utils/usernameCheck';
 import SpinnerLoader from '../components/loaders.js/Spinner';
 
@@ -52,9 +52,16 @@ export default function SignUp() {
                         username: username,
                         fullName: fullName,
                         emailAddress: email.toLocaleLowerCase(),
-                        following: [],
+                        following: ['9XjnR00NNBdIhvtUdfRbi3gKXxm1'],
                         followers: [],
                         dateCreated: Date.now()
+                    })
+                })
+                .then(() => {
+                    const defaultFollows = doc(db, "users", 'sherif')
+                    console.log('s', defaultFollows, user.uid)
+                    updateDoc(defaultFollows, {
+                        followers: arrayUnion(user.uid)
                     })
                 })
                 .then(() => navigate(PAGES.DASHBOARD))
@@ -63,7 +70,7 @@ export default function SignUp() {
                 setLoading(false)
                 setEmail('')
                 setPassword('')
-                const errorCode = error.code;
+                //const errorCode = error.code;
                 const errorMessage = error.message;
                 setError(errorMessage)
             });
