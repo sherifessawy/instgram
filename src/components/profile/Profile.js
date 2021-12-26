@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {Content, Header, Posts, Icons, PostFrame} from './profileStyles'
-import { getUserDataByusername, getContactsDataById } from '../../utils/getUserData'
+import { getUserDataByusername } from '../../utils/getUserData'
 import {profilePosts} from '../../utils/get-post-data'
 import Form from '../form'
 import { FirebaseContext } from '../../context/firebase'

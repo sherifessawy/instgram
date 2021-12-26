@@ -129,18 +129,16 @@ export const Overlay = styled.div`
 
 export const PostLayer = styled.div`
     max-width: 95%;
-    transform: scale(0.9, 0.9); 
-    margin: 0 auto;
     z-index: 10;
     position: fixed;
-    top: -25px;
-    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scale(0.8, 0.8);
     right: 0;
+    left: 0;
+    margin: auto;
     
     @media(min-width: 400px){
         max-width: 400px;
-        top: -70px;
-        transform: scale(0.8, 0.8); 
     }
 `
 
