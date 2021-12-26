@@ -9,6 +9,7 @@ export function ShowContacts({targetContacts, profileData, followersCount}) {
     const [contacts, setContacts] = useState([])
 
     async function handleClick(){
+        if (profileData[targetContacts].length === 0) {return null} //no followers or following
         const getContacts = await getContactsDataById(profileData[targetContacts])
         setContacts(getContacts)
         setIsActive(true)
