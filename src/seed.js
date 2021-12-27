@@ -86,9 +86,9 @@ export function seedDatabase(firebase) {
 
     const userPhoto = async () => {
       const db = getFirestore(firebase)
-      await setDoc(doc(db, "photos", `photo10`), 
+      await setDoc(doc(db, "photos", `photo111`), 
           {
-          photoId: '10',
+          photoId: '111',
           userId: '6aPvYLd5zLPqv2UJiykNtChBECQ2',
           imageSrc: `/images/users/strange/1.jpg`,
           caption: 'fixing some out of hands spells',

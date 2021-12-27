@@ -25,7 +25,7 @@ function App() {
                         />
                         <Route 
                             path={PAGES.SIGN_UP} 
-                            element={!user ? <SignUp/> : <Navigate to={PAGES.DASHBOARD} /> } //navigate to dashboard if the user is signed in
+                            element={<SignUp/>} //removed auto navigate to dashboard if user signed in as it resulted in data fetching issues as the user is being redirected instantaneously before their profile is created in the database and resulted in no data is retrieved from database when it's called. this auto navigate on sign up is handled in sign up page
                         />
                         <Route path={PAGES.PROFILE} element={<Profile/>} />
                         <Route

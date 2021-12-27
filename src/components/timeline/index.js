@@ -5,7 +5,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { Instagram } from 'react-content-loader'
 
 export default function Timeline() {
-    const {posts} = usePostData() // passing the timeline changing state to make the hook do a query to firestore and get updated Post data
+    const {posts} = usePostData() 
     
     let timelinePosts = null
     if (posts && posts !== "no posts") {

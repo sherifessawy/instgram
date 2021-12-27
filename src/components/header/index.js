@@ -36,8 +36,8 @@ export default function Header({children, ...rest}) {
                             />
                         </svg>
                     </Link>
-                    <button onClick={() => {
-                        signOut(auth)
+                    <button onClick={async () => {
+                        await signOut(auth) //awaiting sign out async operation as it resulted in can't perfom state update on an unmounted component when navigating to login page berfore awaiting the sign out operation to be completed. 
                         navigate(PAGES.LOGIN)}}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -3,10 +3,11 @@ import Form from '../components/form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as PAGES from '../constants/routes'
 import { FirebaseContext } from '../context/firebase';
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from "firebase/auth";
 import { doc, setDoc, getFirestore, arrayUnion, updateDoc} from 'firebase/firestore'
 import doesUsernameExist from '../utils/usernameCheck';
 import SpinnerLoader from '../components/loaders.js/Spinner';
+import { UserContext } from '../context/user';
 
 export default function SignUp() {
     useEffect(() => {
@@ -19,6 +20,7 @@ export default function SignUp() {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+    const {user} = useContext(UserContext)
 
     const isValid = password === '' || email === '' || fullName === '' || username === '';
     
@@ -31,6 +33,10 @@ export default function SignUp() {
 
         const db = getFirestore(firebaseApp)
         const auth = getAuth(firebaseApp);
+
+        if (user){ 
+            await signOut(auth) //signing out active user if tried to sign up with another account
+        } 
 
         const isDuplicatedUsername = await doesUsernameExist(username)
         if(isDuplicatedUsername){
@@ -59,7 +65,6 @@ export default function SignUp() {
                 })
                 .then(() => {
                     const defaultFollows = doc(db, "users", 'sherif')
-                    console.log('s', defaultFollows, user.uid)
                     updateDoc(defaultFollows, {
                         followers: arrayUnion(user.uid)
                     })
