@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { Content, Title, Input, Button, Footer, Image, Frame} from './formStyles'
 
 function Form({children, ...rest}) {

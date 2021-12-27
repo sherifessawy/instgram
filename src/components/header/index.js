@@ -16,7 +16,7 @@ export default function Header({children, ...rest}) {
         <div className='bg-white'>
         <Content {...rest} className="max-w-screen-lg mx-auto">
             <Logo to={PAGES.DASHBOARD}>
-                <img src={'/images/logo.png'} />
+                <img src={'/images/logo.png'} alt='Instgram'/>
             </Logo>
             {user ? (
                 <div className="flex items-center cursor-pointer">
@@ -50,7 +50,7 @@ export default function Header({children, ...rest}) {
                                 className="rounded-full h-8 w-8 flex ml-6 mr-2"
                                 src={`/images/avatars/${user.displayName}.jpg`}
                                 onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} 
-                                alt={`${user.displayName} profile picture`}
+                                alt={`${user.displayName} profile`}
                             />
                         </Link>
                     </div>

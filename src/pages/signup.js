@@ -47,12 +47,12 @@ export default function SignUp() {
         }  
 
         await createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
+            .then(async (userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                updateProfile(user, {displayName: username})
-                .then(async () => {
-                    await setDoc(doc(db, "users", username), 
+                await updateProfile(user, {displayName: username})
+                .then(() => {
+                    setDoc(doc(db, "users", username), 
                     {
                         userId: user.uid,
                         username: username,

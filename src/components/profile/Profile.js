@@ -14,15 +14,21 @@ function Profile({username, activeUser}) {
     const [posts, setPosts] = useState()
     const [updateProfileData, setUpdateProfileData] = useState(false)
     
-    useEffect(async () => {
-        const res = await getUserDataByusername(username)
-        setProfileData(res)
+    useEffect(() => {
+        async function getUserData(){
+            const res = await getUserDataByusername(username)
+            setProfileData(res)
+        }
+        getUserData()
     }, [username, updateProfileData])
     
-    useEffect(async () => {
+    useEffect(() => {
         if (profileData && profileData.userId){
-            const res2 = await profilePosts(profileData.userId)
-            setPosts(res2)
+            async function getPosts(){
+                const res2 = await profilePosts(profileData.userId)
+                setPosts(res2)
+            }
+            getPosts()
         }
     }, [profileData, updateProfileData])
 
@@ -91,7 +97,7 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
                 <img 
                     src={`/images/avatars/${profileData.username}.jpg`}
                     onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} 
-                    alt={`${profileData.username} profile picture`}
+                    alt={`${profileData.username} profile`}
                 />
                 <div className='flex flex-col justify-between h-40 phone:h-28 phone:justify-center'>
                     <div className='flex'>

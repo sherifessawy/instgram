@@ -11,22 +11,25 @@ export default function Sidebar({children, ...rest}) {
     const {user} = useUserData()
     const [suggestedUsers, setSuggestedUsers] = useState([])    
 
-    useEffect(async () => {
+    useEffect(() => {
         //in the following function we passing, as arguments, array of users to exclude from the firestore query (which are the active user and the users the active user follow)
         if(user && user.following){
-            const res = await getUserDataById([...user.following, user.userId], false) //returns array of profiles not followed by the current active user)
-            const renderSuggestions = res.map(suggestion => (
-                <Sidebar.Profile 
-                        key={suggestion.userId}
-                        src={`/images/avatars/${suggestion.username}.jpg`} 
-                        alt={`${suggestion.fullName} photo`}
-                        user={suggestion}
-                        scaleDown
-                        setSuggestedUsers = {setSuggestedUsers}
-                        activeUser={user}
-                />
-            ))
-            setSuggestedUsers(renderSuggestions)
+            async function getUserData(){
+                const res = await getUserDataById([...user.following, user.userId], false) //returns array of profiles not followed by the current active user)
+                const renderSuggestions = res.map(suggestion => (
+                    <Sidebar.Profile 
+                            key={suggestion.userId}
+                            src={`/images/avatars/${suggestion.username}.jpg`} 
+                            alt={suggestion.fullName}
+                            user={suggestion}
+                            scaleDown
+                            setSuggestedUsers = {setSuggestedUsers}
+                            activeUser={user}
+                    />
+                ))
+                setSuggestedUsers(renderSuggestions)
+            }
+            getUserData()
         }
     }, [user])
     
@@ -57,7 +60,7 @@ Sidebar.Profile = function SidebarProfile({children, src, alt, user, setSuggeste
     const db  = getFirestore(firebaseApp)
     async function followUser(){
         setSuggestedUsers( prev => (
-            prev.filter(item => item.props.user.userId != user.userId)
+            prev.filter(item => item.props.user.userId !== user.userId)
         ))
         const activeUserRef = doc(db, "users", activeUser.username)
         const profileRef = doc(db, "users", user.username)
@@ -72,7 +75,7 @@ Sidebar.Profile = function SidebarProfile({children, src, alt, user, setSuggeste
     return(
         <Profile {...rest}>
             <Link to={`/p/${user.username}`} >
-                <img src={src} alt={`${user.fullName} photo`} onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} />
+                <img src={src} alt={user.fullName} onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} />
             </Link>
             <div>
                 <p>{user.username}</p>

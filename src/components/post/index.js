@@ -16,9 +16,12 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
    
     const {user} = useContext(UserContext)
 
-    useEffect(async () => {
-        const getPoster = await getUserDataById(userId)
-        setPostUser(getPoster[0].username)
+    useEffect(() => { //Effect callbacks are synchronous to prevent race conditions. async function is now placed inside
+        async function fetchUserData(){
+            const getPoster = await getUserDataById(userId)
+            setPostUser(getPoster[0].username)
+        }
+        fetchUserData()
     }, [userId])
 
     const inputEl = useRef(null)
@@ -33,7 +36,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
     )
     const [postComments, setPostComments] = useState(postCommentsVisibility)
     
-    useEffect(async () => {
+    useEffect(() => {
         //adding new comment to post in firestore
         if (newComment){ // to prevent useEffect from making a firebase call on component mount
             setTempComments(prevComments => [...prevComments, {comment: newComment, displayName:user.displayName}])
@@ -43,10 +46,12 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
             
             const db  = getFirestore(firebaseApp)
             const docRef = doc(db, "photos", `photo${photoId}`);
-            await updateDoc(docRef, {
-                comments: arrayUnion({displayName: user.displayName, comment:newComment})
-            }).catch(err => console.log(err))
-            
+            async function addComment(){
+                await updateDoc(docRef, {
+                    comments: arrayUnion({displayName: user.displayName, comment:newComment})
+                }).catch(err => console.log(err))
+            }
+            addComment()
         }
     }, [newComment])
     
@@ -68,12 +73,12 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
                 <img
                     className="rounded-full h-12 w-12 flex m-3 ml-6"
                     src={`/images/avatars/${postUser}.jpg`}
-                    alt={`${postUser} profile picture`}
+                    alt={`${postUser} profile`}
                 />
                 <p className='font-bold'>{postUser}</p>
             </Link>
 
-            <img src={imageSrc} alt="post image" />
+            <img src={imageSrc} alt="post" />
 
             <div className='flex justify-between w-14 m-4'>
                 <Post.LikeIcon 
