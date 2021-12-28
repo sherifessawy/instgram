@@ -37,7 +37,7 @@ export default function Sidebar({children, ...rest}) {
         <Content {...rest}>
             {user && user.username ? (
             <Sidebar.Profile 
-                src={`https://sherifessawy.github.io/instgram/images/avatars/${user.username}.jpg`} 
+                imgSrc={`https://sherifessawy.github.io/instgram/images/avatars/${user.username}.jpg`} 
                 alt={`${user.fullName} photo`}
                 user={user}
                 dontDisplayForPhones
