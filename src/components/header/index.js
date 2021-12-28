@@ -49,7 +49,7 @@ export default function Header({children, ...rest}) {
                             <img
                                 className="rounded-full h-8 w-8 flex ml-6 mr-2"
                                 src={`https://sherifessawy.github.io/instgram/images/avatars/${user.displayName}.jpg`}
-                                onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} 
+                                onError={(e)=>{e.target.onerror = null; e.target.src="https://sherifessawy.github.io/instgram/images/avatars/blank.png"}} 
                                 alt={`${user.displayName} profile`}
                             />
                         </Link>

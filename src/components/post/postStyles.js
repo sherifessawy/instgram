@@ -5,6 +5,11 @@ export const Content = styled.div`
     border: 1px solid #d3e6d8;
     border-bottom: none;
     background: white;
+
+    .fit-in-frame{
+        width: 100%;
+        object-fit: cover;
+    }
 `
 
 export const Caption = styled.p`

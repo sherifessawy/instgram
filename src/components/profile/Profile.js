@@ -96,7 +96,7 @@ Profile.Header = function ProfileHeader({profileData, activeUserId, activeUserna
             <Header>
                 <img 
                     src={`https://sherifessawy.github.io/instgram/images/avatars/${profileData.username}.jpg`}
-                    onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} 
+                    onError={(e)=>{e.target.onerror = null; e.target.src="https://sherifessawy.github.io/instgram/images/avatars/blank.png"}} 
                     alt={`${profileData.username} profile`}
                 />
                 <div className='flex flex-col justify-between h-40 phone:h-28 phone:justify-center'>

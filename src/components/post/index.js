@@ -78,7 +78,7 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
                 <p className='font-bold'>{postUser}</p>
             </Link>
 
-            <img src={imageSrc} alt="post" />
+            <img className='fit-in-frame' src={imageSrc} alt="post" />
 
             <div className='flex justify-between w-14 m-4'>
                 <Post.LikeIcon 
