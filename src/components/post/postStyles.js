@@ -48,7 +48,7 @@ export const LikeIcon = styled.div`
 `
 
 export const CommentsDiv = styled.div`
-    max-height: 100px;
+    max-height: 200px;
     overflow: auto;
      
 `

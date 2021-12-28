@@ -132,13 +132,16 @@ export const PostLayer = styled.div`
     z-index: 10;
     position: fixed;
     top: 50%;
-    transform: translateY(-50%) scale(0.8, 0.8);
+    transform: translateY(-50%);
     right: 0;
     left: 0;
     margin: auto;
+    max-height: 95vh;
+    overflow: auto;
+    background: white;
     
-    @media(min-width: 400px){
-        max-width: 400px;
+    @media(min-width: 480px){
+        max-width: 480px;
     }
 `
 
@@ -147,7 +150,7 @@ export const CloseButton = styled.div`
     font-size: 2rem;
     font-weight: bold;
     top: 9px;
-    left: 350px;
+    left: 420px;
     right: 0;
     cursor: pointer;
     &:hover{
@@ -155,7 +158,7 @@ export const CloseButton = styled.div`
     }
 
     @media(max-width: 400px){
-        left: 320px;
+        left: 310px;
     }
 `
 
