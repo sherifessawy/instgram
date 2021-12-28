@@ -39,7 +39,7 @@ export function ShowContacts({targetContacts, profileData, followersCount}) {
                                 <Sidebar.Profile
                                     onClick={() =>  setIsActive(false)}
                                     key={contact.userId} 
-                                    src={`/images/avatars/${contact.username}.jpg`} 
+                                    src={`https://sherifessawy.github.io/instgram/images/avatars/${contact.username}.jpg`} 
                                     alt={`${contact.fullName} photo`}
                                     user={contact}
                                 />
