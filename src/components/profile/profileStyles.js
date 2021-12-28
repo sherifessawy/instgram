@@ -52,6 +52,7 @@ export const Posts = styled.div`
     display: grid;
     grid-template-columns: repeat( auto-fit, minmax(250px, 1fr) );
     grid-gap: 30px;
+    align-items: start;
     position: relative;
     
     img{

@@ -139,7 +139,7 @@ Profile.Posts = function ProfilePosts({posts = [], setUpdateProfileData}){
         if (posts.length>0){
             const allPosts = posts.map((post) => (
                 <PostFrame key={post.photoId}>
-                    <img src={`https://sherifessawy.github.io/instgram${post.imageSrc}`} alt={post.caption} />
+                    <img src={post.imageSrc} alt={post.caption} />
                     <Icons>
                         <div className='flex'>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="white" viewBox="0 0 24 24" stroke="white">
