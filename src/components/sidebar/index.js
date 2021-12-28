@@ -19,7 +19,7 @@ export default function Sidebar({children, ...rest}) {
                 const renderSuggestions = res.map(suggestion => (
                     <Sidebar.Profile 
                             key={suggestion.userId}
-                            src={`/images/avatars/${suggestion.username}.jpg`} 
+                            imgSrc={`https://sherifessawy.github.io/instgram/images/avatars/${suggestion.username}.jpg`} 
                             alt={suggestion.fullName}
                             user={suggestion}
                             scaleDown
@@ -54,7 +54,7 @@ export default function Sidebar({children, ...rest}) {
     );
 }
 
-Sidebar.Profile = function SidebarProfile({children, src, alt, user, setSuggestedUsers, activeUser, ...rest}){
+Sidebar.Profile = function SidebarProfile({children, imgSrc, alt, user, setSuggestedUsers, activeUser, ...rest}){
     
     const {firebaseApp} = useContext(FirebaseContext)
     const db  = getFirestore(firebaseApp)
@@ -75,7 +75,10 @@ Sidebar.Profile = function SidebarProfile({children, src, alt, user, setSuggeste
     return(
         <Profile {...rest}>
             <Link to={`/p/${user.username}`} >
-                <img src={src} alt={user.fullName} onError={(e)=>{e.target.onerror = null; e.target.src="/images/avatars/blank.png"}} />
+                <img 
+                    src={imgSrc} 
+                    alt={user.fullName} 
+                    onError={(e)=>{e.target.onerror = null; e.target.src="https://sherifessawy.github.io/instgram/images/avatars/blank.png"}} />
             </Link>
             <div>
                 <p>{user.username}</p>

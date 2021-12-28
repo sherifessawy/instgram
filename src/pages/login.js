@@ -45,7 +45,11 @@ export default function Login() {
     ) : (
         <div style={{background: '#fafafa'}}>
         <Form.Frame>
-            <img src='./images/iphone-with-profile.jpg' alt='iphone with profile' style={{width: '50%', maxWidth:'370px'}}/>
+            <img 
+                src='https://sherifessawy.github.io/instgram/images/iphone-with-profile.jpg' 
+                alt='iphone with profile' 
+                style={{width: '50%', maxWidth:'370px'}}
+            />
             <Form method="POST">
                 <Form.Image src='./images/logo.png'/>
                 <Form.Input 

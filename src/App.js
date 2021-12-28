@@ -16,7 +16,7 @@ function App() {
 
     return (
         <UserContext.Provider value={{ user }}>
-            <Router>
+            <Router basename="/instgram">
                 <Suspense fallback={<Camera />}>
                     <Routes>
                         <Route 

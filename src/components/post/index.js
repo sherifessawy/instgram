@@ -72,13 +72,13 @@ function Post({postInfo: {caption, likes, comments, imageSrc, dateCreated, photo
             <Link to={`/p/${postUser}`} className='flex items-center'>
                 <img
                     className="rounded-full h-12 w-12 flex m-3 ml-6"
-                    src={`/images/avatars/${postUser}.jpg`}
+                    src={`https://sherifessawy.github.io/instgram/images/avatars/${postUser}.jpg`}
                     alt={`${postUser} profile`}
                 />
                 <p className='font-bold'>{postUser}</p>
             </Link>
 
-            <img src={imageSrc} alt="post" />
+            <img src={`https://sherifessawy.github.io/instgram${imageSrc}`} alt="post" />
 
             <div className='flex justify-between w-14 m-4'>
                 <Post.LikeIcon 
