@@ -35,6 +35,7 @@ export const Button = styled.button`
     color: white;
     font-weight: bold;
     width: ${({width}) => width ? width : '100'}%;
+    min-width: fit-content;
     margin-top: 0.5rem;
     padding: 3px;
     border-radius: 4px;
@@ -58,4 +59,8 @@ export const Frame = styled.div`
     max-width: 720px;
     margin: 0 auto;
     min-height: 100vh;
+
+    @media(max-width: 480px){
+        flex-direction: column;
+    }
 `
